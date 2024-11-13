@@ -1,0 +1,90 @@
+/* Ogólny kontener formularza rejestracji */
+.register-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 30px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+/* Nagłówek formularza */
+.register-header {
+    font-family: 'Arial', sans-serif;
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Styl formularza */
+.register-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Styl dla inputów */
+.register-input {
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.register-input:focus {
+    border-color: #5cb85c;
+    box-shadow: 0 0 5px rgba(92, 184, 92, 0.5);
+}
+
+/* Styl przycisku */
+.register-button {
+    padding: 14px;
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.register-button:hover {
+    background-color: #4cae4c;
+}
+
+/* Styl błędów */
+.error-message {
+    color: #d9534f;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* Responsywność */
+@media (max-width: 480px) {
+    .register-container {
+        padding: 20px;
+        margin: 50px auto;
+    }
+
+    .register-header {
+        font-size: 1.5rem;
+    }
+
+    .register-input {
+        font-size: 0.9rem;
+    }
+
+    .register-button {
+        font-size: 1rem;
+    }
+}

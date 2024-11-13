@@ -1,0 +1,94 @@
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Wyśrodkowanie elementów */
+    padding: 0; /* Usunięcie paddingu */
+    margin: 0; /* Usunięcie marginesów */
+    width: 100%; /* Pełna szerokość kontenera */
+    background-color: #ffffff; /* Jasnoszare tło */
+}
+
+.image-header {
+    width: 100%;
+    margin: 0; /* Usunięcie marginesu dolnego */
+}
+
+.login-image {
+    width: 100%; /* Użycie pełnej szerokości kontenera */
+    height: 600px; /* Stała wysokość */
+    object-fit: cover; /* Dostosowanie obrazu do kontenera */
+}
+
+h2 {
+    color: #333; /* Ciemnoszary kolor */
+    margin: 20px 0; /* Odstęp górny i dolny */
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 800px; /* Maksymalna szerokość formularza */
+    margin: 20px 0; /* Górny i dolny margines */
+    padding: 20px; /* Padding wewnętrzny */
+    border-radius: 8px; /* Zaokrąglone rogi formularza */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Lekki cień dla formularza */
+}
+
+.form-group {
+    width: 100%; /* Umożliwia pełną szerokość */
+    margin-bottom: 15px; /* Odstęp między grupami formularza */
+}
+
+.form-control {
+    width: 100%; /* Pełna szerokość */
+    padding: 10px; /* Wewnętrzny padding */
+    border: 1px solid #ccc; /* Dodanie granicy */
+    border-radius: 4px; /* Zaokrąglone rogi */
+    background-color: transparent; /* Przezroczyste tło */
+}
+
+.btn-primary {
+    background-color: #7f8081;
+    border: none;
+    color: white;
+    transition: background-color 0.3s;
+    margin-top: 20px; /* Margines górny dla przycisku */
+    width: 100%; /* Pełna szerokość przycisku */
+}
+
+.btn-primary:hover {
+    background-color: #5b5d5f;
+}
+.divider {
+    border: none;
+    border-top: 3px dashed #3c3c3c;
+    width: 100%;
+    margin: 20px 0; /* Margines górny i dolny dla separatora */
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .login-container {
+        padding: 10px; /* Mniejsze paddingi na mniejszych ekranach */
+    }
+
+    .form-container {
+        padding: 15px; /* Mniejsze paddingi wewnętrzne w formularzu */
+    }
+
+    .btn-primary {
+        width: 100%; /* Przycisk zajmuje całą szerokość */
+    }
+}
+
+@media (max-width: 480px) {
+    h2 {
+        font-size: 1.5rem; /* Zmniejszenie rozmiaru nagłówka */
+    }
+
+    .form-control {
+        padding: 8px; /* Mniejsze paddingi w polach formularza */
+    }
+}

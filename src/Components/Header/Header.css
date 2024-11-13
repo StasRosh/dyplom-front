@@ -1,0 +1,109 @@
+/* Nagłówek */
+.navbar {
+    position: fixed; /* Ustaw nagłówek na fixed */
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000; /* Upewnij się, że nagłówek jest nad innymi elementami */
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f8f9fa; /* Kolor tła nagłówka */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Cień dla nagłówka */
+}
+
+/* Logo */
+.logo-container img {
+    height: 4.375rem; /* 70px w remach */
+}
+
+/* Nawigacja */
+.navbar-nav {
+    display: flex; /* Umożliwia ustawienie elementów w poziomie */
+}
+
+.navbar-nav .nav-link {
+    font-size: 1.25rem; /* Zwiększono rozmiar czcionki do 20px */
+    color: #333; /* Kolor tekstu linków */
+    transition: background-color 0.3s, color 0.3s; /* Płynne przejście */
+    padding: 10px 15px; /* Dodanie paddingu dla lepszego obszaru klikalnego */
+    margin: 0 5px; /* Odstęp między linkami */
+}
+
+.navbar-nav .nav-link:hover {
+    text-decoration: underline;
+    background-color: #9e9f9f; /* Kolor tła przy najeżdżaniu */
+    color: #000000; /* Kolor tekstu przy najeżdżaniu */
+}
+
+/* Przyciski toggle */
+.navbar-toggler {
+    background: #fff; /* Kolor tła przycisku */
+    border: 1px solid #8c8c8c; /* Krawędź przycisku */
+    border-radius: 5px; /* Zaokrąglenie krawędzi */
+    display: flex;
+    align-items: center;
+}
+
+.navbar-toggler:hover {
+    background-color: #e0e0e0; /* Kolor tła przy najeżdżaniu */
+}
+
+/* Linia */
+.line {
+    background-color: #0e0e0e; /* Kolor linii */
+    height: 5px; /* Grubość linii */
+    width: 100%; /* Szerokość linii */
+    margin: 2px 0; /* Odstęp między liniami */
+    transition: all 0.3s ease; /* Animacja przejścia */
+}
+
+.navbar-toggler.active .line:nth-child(1) {
+    transform: translateY(8px) rotate(45deg); /* Przesunięcie i obrót górnej linii */
+}
+
+.navbar-toggler.active .line:nth-child(2) {
+    opacity: 0; /* Ukrycie środkowej linii */
+}
+
+.navbar-toggler.active .line:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg); /* Przesunięcie i obrót dolnej linii */
+}
+
+/* Responsywne style */
+@media (max-width: 576px) {
+    .navbar-collapse {
+        padding: 0.625rem; /* 10px w remach */
+        background-color: #f0f0f0; /* Tło bloku po rozwinięciu */
+        border-radius: 8px; /* Opcjonalnie: zaokrąglenie krawędzi */
+    }
+
+    .navbar-nav {
+        flex-direction: column; 
+        width: 100%; 
+        align-items: stretch; /* Wyśrodkowanie linków */
+    }
+
+    .navbar-nav .nav-link {
+        display: block; /* Umożliwia, że tło zajmuje całą szerokość */
+        padding: 10px 15px; /* Dodanie paddingu dla lepszego obszaru klikalnego */
+        margin: 0.625rem 0; /* 10px w remach */
+        font-size: 1rem; /* 16px w remach */
+        text-align: center; /* Wyśrodkowanie linków w mniejszych ekranach */
+        background-color: transparent; /* Domyślne tło dla linków */
+        transition: background-color 0.3s; /* Płynna zmiana tła */
+    }
+
+    .navbar-nav .nav-link:hover {
+        background-color: #9e9f9f; /* Kolor tła przy najeżdżaniu */
+        color: #000000; /* Kolor tekstu przy najeżdżaniu */
+    }
+
+    .logo-container img {
+        height: 3.75rem; /* 60px w remach */
+    }
+}
+
+/* Klasa dla głównej zawartości */
+.main-content {
+    padding-top: 70px; /* Ustawienie paddingu, aby uniknąć zasłaniania */
+}

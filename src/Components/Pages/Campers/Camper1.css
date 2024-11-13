@@ -1,0 +1,215 @@
+/* Detale kampera */
+.camper1-details {
+    text-align: center;
+    margin: 30px auto;
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 20px;
+}
+
+/* Obrazek kampera */
+.camper1-detail-image {
+    width: 100%;
+    height: auto;
+    gap: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+   
+}
+
+/* Galeria zdjęć */
+.camper1-gallery {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.camper1-gallery img {
+    width: 32%; /* Domyślnie zdjęcia zajmują 32% szerokości */
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.camper1-gallery img:hover {
+    transform: scale(1.05);
+}
+
+/* Nowy kontener dla kalendarza i formularza */
+.camper1-reservation-container {
+    margin-top: 30px;
+    max-width: 1200px; /* Maksymalna szerokość kontenera */
+    margin: 0 auto; /* Wyśrodkowanie kontenera */
+}
+
+/* Formularz rezerwacji */
+.camper1-reservation-form-container {
+    width: 100%;
+    max-width: 600px; /* Maksymalna szerokość formularza */
+    margin: 0 auto; /* Wyśrodkowanie formularza */
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background-color: #fff;
+    margin-bottom: 30px; /* Dodanie odstępu między formularzem a kalendarzem */
+}
+
+.camper1-reservation-form-container .form-control {
+    margin-bottom: 10px;
+}
+
+.camper1-reservation-status {
+    color: #2ecc71;
+    font-weight: bold;
+    margin-top: 15px;
+    text-align: center;
+}
+
+.camper1-error-message {
+    color: #e74c3c;
+    font-weight: bold;
+    margin-top: 15px;
+    text-align: center;
+}
+
+/* Kalendarz rezerwacji */
+.camper1-calendar-container {
+    display: flex; /* Użycie flexbox do centrowania */
+    justify-content: center; /* Wyśrodkowanie poziome */
+    align-items: center; /* Wyśrodkowanie pionowe */
+    width: 100%;
+    max-width: 600px; /* Maksymalna szerokość kalendarza */
+    margin: 0 auto; /* Wyśrodkowanie kalendarza */
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+/* Dostosowanie wyglądu kalendarza */
+.react-calendar {
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Stylowanie kafelków w kalendarzu */
+.react-calendar__tile {
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.react-calendar__tile:hover {
+    background-color: #007bff;
+    color: #fff;
+    transform: scale(1.05);
+}
+
+/* Stylowanie dni tygodnia */
+.react-calendar__month-view__weekdays {
+    font-weight: bold;
+}
+
+/* Nawigacja kalendarza */
+.react-calendar__navigation button {
+    background-color: transparent;
+    border: none;
+    font-size: 16px;
+    color: #007bff;
+    padding: 10px;
+}
+
+.react-calendar__navigation button:hover {
+    color: #0056b3;
+}
+
+/* Przycisk rezerwacji */
+.camper1-btn-primary {
+    padding: 12px 20px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+    display: block;
+    width: 100%;
+}
+
+.camper1-btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.camper1-btn-primary:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Responsywność */
+
+/* Dla tabletów i urządzeń z ekranem większym niż 480px */
+@media (max-width: 768px) {
+    .camper1-gallery {
+        justify-content: center;
+    }
+
+    .camper1-gallery img {
+        width: 48%; /* Zmniejszamy szerokość zdjęć do 48% na tabletach */
+    }
+
+    .camper1-reservation-container {
+        padding: 0 15px; /* Odstęp od krawędzi na małych ekranach */
+    }
+
+    .camper1-reservation-form-container,
+    .camper1-calendar-container {
+        width: 100%; /* Ustawienie szerokości na 100% */
+        max-width: none; /* Usunięcie ograniczenia szerokości */
+    }
+
+    .camper1-btn-primary {
+        font-size: 14px;
+        padding: 10px 15px;
+    }
+
+    /* Detale kampera */
+    .camper1-details {
+        padding: 15px;
+        margin-top: 70px;
+    }
+}
+
+/* Dla małych ekranów (smartfony) */
+@media (max-width: 480px) {
+    .camper1-gallery {
+       
+        justify-content: center;
+    }
+
+    .camper1-gallery img {
+        margin-bottom: 10px;
+    }
+
+    .camper1-reservation-form-container,
+    .camper1-calendar-container {
+        width: 100%;
+    }
+
+    .camper1-btn-primary {
+        font-size: 14px;
+        padding: 10px 15px;
+    }
+
+    .camper1-details {
+        padding: 15px;
+        margin-top: 70px;
+    }
+}

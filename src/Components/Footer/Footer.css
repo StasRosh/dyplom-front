@@ -1,0 +1,69 @@
+.contact-info {
+    background-color: rgb(54, 54, 54); /* Tło na biało */
+    color: rgb(255, 255, 255); /* Kolor tekstu na czarny */
+    padding: 15px; /* Zmniejszenie paddingu */
+    margin-top: 20px;
+    display: flex; /* Użycie flexboxa */
+    justify-content: space-between; /* Rozmieszczenie kolumn */
+    font-family: 'Poppins', sans-serif; /* Czcionka */
+    font-size: 0.8rem; /* Zmniejszenie rozmiaru czcionki */
+    flex-wrap: wrap; /* Umożliwia zawijanie kolumn */
+}
+
+.column {
+    flex: 1; /* Równa ilość miejsca dla każdej kolumny */
+    margin: 5px; /* Mniejszy margines */
+}
+.column p {
+    margin: 1px 0; /* Zmniejszenie odstępów między tekstami */
+}
+
+
+/* Separator */
+.separator {
+    width: 2px; /* Szerokość separatora */
+    background-color: rgb(255, 255, 255); /* Kolor separatora na czarny */
+    height: 60px; /* Wysokość separatora */
+    margin: 0 5px; /* Mniejszy margines wokół separatora */
+}
+
+/* Nagłówki */
+.column h2 {
+    color: #ffffff; /* Kolor boaly */
+    margin: 3px 0; /* Mniejszy odstęp między nagłówkami */
+    font-size: 1.2rem;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .contact-info {
+        flex-direction: column; /* Zawijanie kolumn na mniejszych ekranach */
+        align-items: center; /* Wyśrodkowanie zawartości */
+    }
+
+    .column {
+        width: 100%; /* Kolumny zajmują całą szerokość */
+        margin: 5px 0; /* Mniejsze marginesy w pionie */
+    }
+    .separator {
+        width: 70%; /* Szerokość separatora na 100% na małych ekranach */
+        height: 2px; /* Zwiększenie wysokości separatora na małych ekranach */
+        margin: 10px 0; /* Margines w pionie */
+    }
+}
+
+@media (max-width: 480px) {
+    .contact-info {
+        font-size: 0.7rem; /* Jeszcze mniejszy rozmiar czcionki na bardzo małych ekranach */
+        padding: 10px; /* Dalsze zmniejszenie paddingu */
+    }
+
+    .column h2 {
+        font-size: 1.2rem; /* Zmniejszenie rozmiaru nagłówków w kolumnach */
+        margin: 1px 0; /* Jeszcze mniejszy odstęp między nagłówkami */
+    }
+
+    .column p {
+        margin: 1px 0; /* Zmniejszenie odstępów między tekstami */
+    }
+}

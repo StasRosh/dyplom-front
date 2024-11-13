@@ -1,5 +1,8 @@
 .App {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Umożliwia wypełnienie wysokości ekranu */
 }
 
 .App-logo {
@@ -15,7 +18,7 @@
 
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  min-height: 100vh; /* Możesz zmienić na auto, aby nie blokować stopki */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -28,6 +31,15 @@
   color: #61dafb;
 }
 
+footer {
+  margin-top: auto; /* Umożliwia przesunięcie stopki na dół */
+  background-color: #f1f1f1; /* Kolor tła stopki */
+  padding: 20px; /* Padding dla stopki */
+  text-align: center; /* Wyśrodkowanie tekstu w stopce */
+  border-top: 1px solid #ccc; /* Delikatna linia u góry stopki */
+}
+
+/* Możesz dodać inne style CSS dla mediów, jeśli chcesz */
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
