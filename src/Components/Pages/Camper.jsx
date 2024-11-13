@@ -6,11 +6,16 @@ import kamper1 from './Image/image1.webp';
 import kamper2 from './Image/image2.webp';
 import kamper3 from './Image/image3.webp';
 import headerImage from './Image/image6.jpeg';
+import alkowa from './Campers/Image/Wybor/alkowa.svg';  // Dodajemy nowe ikony
+import integra from './Campers/Image/Wybor/integra.svg';
+import kampervan from './Campers/Image/Wybor/kampervan.svg';
+import polintegra from './Campers/Image/Wybor/polintegra.svg';
 
+// Przykładowe dane kamperów z kategoriami
 const campersData = [
-    { id: 1, name: 'Kamper A', description: 'Przestronny i komfortowy kamper.', price: 200, capacity: 4, image: kamper1 },
-    { id: 2, name: 'Kamper B', description: 'Idealny na rodzinne wakacje.', price: 250, capacity: 6, image: kamper2 },
-    { id: 3, name: 'Kamper C', description: 'Kompaktowy i łatwy w prowadzeniu.', price: 150, capacity: 2, image: kamper3 },
+    { id: 1, name: 'Kamper A', description: 'Przestronny i komfortowy kamper.', price: 200, capacity: 4, category: 'alkowa', image: kamper1 },
+    { id: 2, name: 'Kamper B', description: 'Idealny na rodzinne wakacje.', price: 250, capacity: 6, category: 'integra', image: kamper2 },
+    { id: 3, name: 'Kamper C', description: 'Kompaktowy i łatwy w prowadzeniu.', price: 150, capacity: 2, category: 'kampervan', image: kamper3 },
 ];
 
 const Camper = ({ setReservations }) => {
@@ -21,6 +26,7 @@ const Camper = ({ setReservations }) => {
         location: '',
         guests: ''
     });
+    const [selectedCategory, setSelectedCategory] = useState(''); // Dodajemy stan do wyboru kategorii
     const navigate = useNavigate();
 
     const handleSearchChange = (e) => {
@@ -28,32 +34,32 @@ const Camper = ({ setReservations }) => {
         setSearchParams(prevParams => ({ ...prevParams, [name]: value }));
     };
 
+    const handleCategoryClick = (category) => {
+        setSelectedCategory(category); // Ustawiamy wybraną kategorię
+    };
+
     const handleReservation = (camper) => {
         if (!isAuthenticated) {
-            // Jeśli użytkownik nie jest zalogowany, przekierowujemy na stronę kampera
-            // Zamiast przekierowywać na stronę logowania, przejdź do odpowiedniego kampera.
             navigate(`/camper/${camper.id}`);
         } else {
             const reservation = {
-                id: new Date().getTime(), // Unikalne ID rezerwacji (można użyć daty)
+                id: new Date().getTime(),
                 camper: camper.name,
                 startDate: searchParams.startDate,
                 endDate: searchParams.endDate,
                 location: searchParams.location,
                 guests: searchParams.guests,
                 image: camper.image,
-                userId: currentUser.id, // Powiązanie rezerwacji z użytkownikiem
+                userId: currentUser.id,
             };
-
-            // Dodanie rezerwacji do stanu w kontekście (AuthContext)
             setReservations((prevReservations) => [...prevReservations, reservation]);
-
-            // Przekierowanie na stronę rezerwacji
             navigate('/reservations');
         }
     };
 
+    // Filtrujemy kampery według wybranej kategorii oraz innych parametrów
     const filteredCampers = campersData.filter(camper => 
+        (!selectedCategory || camper.category === selectedCategory) &&
         (!searchParams.guests || camper.capacity >= Number(searchParams.guests)) &&
         (!searchParams.location || camper.description.toLowerCase().includes(searchParams.location.toLowerCase()))
     );
@@ -64,6 +70,7 @@ const Camper = ({ setReservations }) => {
                 <img src={headerImage} alt="Nagłówek" className="camper-header-image" />
             </div>
             <hr className="divider" />
+
             <form onSubmit={(e) => e.preventDefault()} className="camper-search-form">
                 <div className="camper-search-bar">
                     <input
@@ -99,7 +106,18 @@ const Camper = ({ setReservations }) => {
                     />
                     <button type="submit" className="camper-search-button">Szukaj</button>
                 </div>
+                <hr className="divider" />
             </form>
+            {/* Sekcja Przegląd wszystkich kamperów */}
+            <div className="camper-category-container">
+                <h3>Przegląd wszystkich kamperów</h3>
+                <div className="camper-category-icons">
+                    <img src={alkowa} alt="Alkowa" onClick={() => handleCategoryClick('alkowa')} className="category-icon" />
+                    <img src={integra} alt="Integra" onClick={() => handleCategoryClick('integra')} className="category-icon" />
+                    <img src={kampervan} alt="Kampervan" onClick={() => handleCategoryClick('kampervan')} className="category-icon" />
+                    <img src={polintegra} alt="Polintegra" onClick={() => handleCategoryClick('polintegra')} className="category-icon" />
+                </div>
+            </div>
 
             <div className="camper-list">
                 {filteredCampers.length === 0 ? (

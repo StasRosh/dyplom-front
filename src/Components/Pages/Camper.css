@@ -3,6 +3,7 @@
     background-color: #fff;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
+    padding: 20px;
 }
 
 /* Nagłówek kampera */
@@ -12,7 +13,7 @@
 
 .camper-header-image {
     width: 100%;
-    
+    height: auto; /* Zapewnia odpowiednią proporcję obrazu */
 }
 
 /* Formularz wyszukiwania */
@@ -20,6 +21,7 @@
     margin-top: 30px;
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
 .camper-search-bar {
@@ -27,13 +29,16 @@
     gap: 15px;
     justify-content: center;
     flex-wrap: wrap;
+    width: 100%;
 }
 
+/* Stylizacja inputów wyszukiwania */
 .camper-search-input {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    width: 200px;
+    width: 220px;
+    margin-bottom: 10px; /* Dodanie przestrzeni między polami */
 }
 
 .camper-search-button {
@@ -45,6 +50,7 @@
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    width: auto;
 }
 
 .camper-search-button:hover {
@@ -61,6 +67,7 @@
     margin-top: 40px;
 }
 
+/* Siatka kamperów */
 .camper-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -86,7 +93,7 @@
 .camper-image {
     width: 100%;
     height: 200px;
-    object-fit: cover;  /* Zapewnia, że zdjęcie wypełnia całą przestrzeń */
+    object-fit: cover; /* Zapewnia, że zdjęcie wypełnia całą przestrzeń */
     border-radius: 8px;
     margin-bottom: 15px;
 }
@@ -101,18 +108,42 @@
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    width: 100%; /* Pełna szerokość przycisku */
 }
 
 .camper-btn:hover {
     background-color: #0056b3;
 }
 
+/* Stylizacja przycisków kategorii */
+.camper-category-container {
+    margin-top: 60px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.camper-category-icons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.category-icon {
+    width: 18%;
+    height: 18%;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.category-icon:hover {
+    transform: scale(1.1);
+}
+
 /* Responsywność dla urządzeń mobilnych */
 @media (max-width: 768px) {
-
-    .camper-header-image {
-        width: 100%;
-        
+    .camper-search-bar {
+        gap: 10px;
     }
 
     .camper-search-input {
@@ -120,27 +151,34 @@
     }
 
     .camper-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, 1fr); /* Dwa elementy w rzędzie */
     }
 
     .camper-btn {
         width: 100%;
     }
+
+    .category-icon {
+        width: 120px;
+        height: 120px;
+    }
 }
 
 @media (max-width: 480px) {
-
-    .camper-header-image {
-        width: 100%;
-        
+    .camper-search-bar {
+        gap: 10px;
     }
+
     .camper-search-input {
         width: 100%;
     }
 
     .camper-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; /* Jeden kamper na wiersz */
     }
 
-    
+    .category-icon {
+        width: 55px;
+        height: 55px;
+    }
 }

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './LogIn.css';
 import loginImage from './Image/kamper10.png';
 
-const LogIn = () => {
+const LogIn = ({ handleClose }) => {
     const { login, currentUser, errorMessage } = useContext(AuthContext);
     const navigate = useNavigate();
 
@@ -13,17 +13,14 @@ const LogIn = () => {
 
     useEffect(() => {
         if (currentUser) {
-            navigate('/');  // Jeśli użytkownik jest już zalogowany, przekierowujemy go na stronę główną
+            handleClose();  // Zamknięcie modala po zalogowaniu
+            navigate('/');  // Przekierowanie na stronę główną po zalogowaniu
         }
-    }, [currentUser, navigate]);
+    }, [currentUser, navigate, handleClose]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        login(email, password);  // Próba zalogowania użytkownika
-
-        if (currentUser) {
-            navigate('/');  // Jeśli logowanie jest udane, przekierowujemy na stronę główną
-        }
+        login(email, password);  // Próba logowania użytkownika
     };
 
     return (
