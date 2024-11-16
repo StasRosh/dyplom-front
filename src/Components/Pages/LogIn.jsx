@@ -38,7 +38,7 @@ const LogIn = ({ handleClose }) => {
                     <div className="form-group">
                         <label htmlFor="email">Email:</label>
                         <input
-                            type="email"
+                            type="text"
                             id="email"
                             className="form-control"
                             value={email}
