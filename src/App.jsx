@@ -13,6 +13,7 @@ import Register from './Components/Pages/Register';
 import Camper from './Components/Pages/Camper';
 import Reservations from './Components/Pages/Reservations';
 import AdminPage from './Components/Pages/Admin/AdminPage';
+import CamperDetails from './Components/Pages/Campers/CamperDetails';
 import Camper1 from './Components/Pages/Campers/Camper1';
 import Camper2 from './Components/Pages/Campers/Camper2';
 import Camper3 from './Components/Pages/Campers/Camper3';
@@ -57,10 +58,9 @@ const App = () => {
                         <Route path="/aboutus" element={<AboutUs />} />
                         <Route path="/login" element={currentUser ? <Navigate to="/" /> : <LogIn />} />
                         <Route path="/register" element={currentUser ? <Navigate to="/" /> : <Register />} />
-                        <Route path="/camper/1" element={<Camper1 addReservation={addReservation} />} />
-                        <Route path="/camper/2" element={<Camper2 addReservation={addReservation} />} />
-                        <Route path="/camper/3" element={<Camper3 addReservation={addReservation} />} />
-                        <Route path="/camper/4" element={<Camper4 addReservation={addReservation} />} />
+                        <Route path="/camper/:camperId" element={<CamperDetails addReservation={addReservation} />} />
+                        {/* <Route path="/camper/2" element={<Camper2 addReservation={addReservation} />} />
+                        <Route path="/camper/3" element={<Camper3 addReservation={addReservation} />} /> */}
                         <Route path="/camper" element={<Camper addReservation={addReservation} />} />
                         <Route path="/reservations" element={<Reservations removeReservation={removeReservation} />} />
 

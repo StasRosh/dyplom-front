@@ -1,4 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
+import axios from 'axios';
+import Cookies from 'js-cookie'
 
 export const AuthContext = createContext();
 
@@ -37,64 +39,92 @@ export const AuthProvider = ({ children }) => {
         setInsurances(storedInsurances);
     }, []);
 
-    useEffect(() => {
-        localStorage.setItem('insurances', JSON.stringify(insurances));
-    }, [insurances]);
-
-    const login = (email, password) => {
-        const user = users.find(user => user.email === email && user.password === password);
-
-        if (user) {
-            if (user.isBlocked) {
-                alert('Twoje konto zostało zablokowane. Skontaktuj się z administratorem.');
-                return;
-            }
-
+    // Funkcja do logowania użytkownika
+    const login = (user, password) => {
+        var data = { username: user, password: password }
+        // console.log("login: " + JSON.stringify(data))
+        axios.post("http://localhost:8080/auth/login", data
+        ).then((res) => {
+            // console.log(res);
+            document.cookie = 'user_key=' + res.data + ';expires=' + new Date(new Date().getTime() + 3600000).toGMTString() + ';'
             setCurrentUser(user);
-            localStorage.setItem('currentUser', JSON.stringify(user));
+        }).catch(function (error) {
+            console.log(error);
+        });
 
-            const storedReservations = JSON.parse(localStorage.getItem('reservations')) || [];
-            const userReservations = storedReservations.filter(reservation => reservation.userId === user.id);
-            setReservations(userReservations);
-        } else {
-            alert('Nieprawidłowy email lub hasło');
-        }
+
+
+        // document.cookie = 'user_key=' + user + ";";
+        // setCurrentUser(user);
+        // localStorage.setItem('currentUser', JSON.stringify(user)); // Zapisz użytkownika w localStorage
+
+        // // Ładowanie rezerwacji tylko dla zalogowanego użytkownika
+        // const storedReservations = JSON.parse(localStorage.getItem('reservations')) || [];
+        // const userReservations = storedReservations.filter(reservation => reservation.userId === user.id);
+        // setReservations(userReservations);
     };
 
     const logout = () => {
         setCurrentUser(null);
         setReservations([]);
-        localStorage.removeItem('currentUser');
+        document.cookie = 'user_key=; Max-Age=0';
+
+        localStorage.removeItem('currentUser'); // Usuwamy użytkownika z localStorage
+        localStorage.removeItem('reservations'); // Usuwamy rezerwacje z localStorage
     };
 
     const register = (newUser) => {
-        const isUserExist = users.some(user => user.email === newUser.email);
 
-        if (isUserExist) {
-            alert("Użytkownik z tym emailem już istnieje.");
-            return;
-        }
+        var data = { email: newUser.email, username: newUser.email, password: newUser.password }
+        console.log(data)
+        axios.post("http://localhost:8080/auth/register", data)
+            .then((res) => {
+                console.log(res)
+                login(data.email, data.password);
+            }).catch((err) => {
+                console.log(err)
+            })
 
-        newUser.role = newUser.email === "admin@admin.com" ? "admin" : "user";
-        newUser.isBlocked = false;
-        newUser.registeredAt = new Date().toISOString();
 
-        const updatedUsers = [...users, newUser];
-        setUsers(updatedUsers);
-        localStorage.setItem('users', JSON.stringify(updatedUsers));
-        setCurrentUser(newUser);
-        localStorage.setItem('currentUser', JSON.stringify(newUser));
 
-        alert("Rejestracja zakończona sukcesem!");
+        // const isUserExist = users.some(user => user.email === newUser.email);
+        // if (isUserExist) {
+        //     alert("Użytkownik z tym emailem już istnieje.");
+        //     return;
+        // }
+
+        // const updatedUsers = [...users, newUser];
+        // setUsers(updatedUsers);
+        // localStorage.setItem('users', JSON.stringify(updatedUsers));
+        // login(newUser);
     };
 
     const addReservation = (newReservation) => {
-        const updatedReservations = [...reservations, newReservation];
-        setReservations(updatedReservations);
+        const config = {
+            headers: { 'Authorization': `Bearer ${Cookies.get("user_key")}` }
+        };
+        var data = {
 
-        const allReservations = JSON.parse(localStorage.getItem('reservations')) || [];
-        allReservations.push(newReservation);
-        localStorage.setItem('reservations', JSON.stringify(allReservations));
+            vehicleId: newReservation.camperId,
+            reservationStartDate: (newReservation.reservationStartDate),
+            reservationEndDate: (newReservation.reservationEndDate),
+            comments: "string",
+            location: newReservation.location
+
+        }
+        console.log("auth:")
+        console.log(newReservation)
+        axios.post("http://localhost:8080/reservation", data, config)
+        .then((res)=>{
+            console.log(res)
+        }).catch((err)=>{
+            console.log(err)
+        })
+
+        if (!currentUser) {
+            alert("Musisz być zalogowany, aby dodać rezerwację.");
+            return;
+        }
     };
 
     const removeReservation = (id) => {
@@ -139,7 +169,9 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const getAllUsers = () => users;
+    const getAllUsers = () => {
+        return users;
+    };
 
     const updateUserRole = (userId, newRole) => {
         const updatedUsers = users.map(user =>
@@ -239,6 +271,11 @@ export const AuthProvider = ({ children }) => {
             getCamperById,
             addInsurance,
             getInsurancesByCamperId,
+            addReservation,
+            removeReservation,
+            login,
+            logout,
+            register
         }}>
             {children}
         </AuthContext.Provider>

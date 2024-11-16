@@ -1,5 +1,5 @@
-import React, { useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useContext, useState, useEffect, useMountEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../Context/AuthContext'; 
 import './Camper.css';
 import kamper1 from './Image/image1.webp';
@@ -11,6 +11,9 @@ import alkowa from './Campers/Image/Wybor/alkowa.svg';
 import integra from './Campers/Image/Wybor/integra.svg';
 import kampervan from './Campers/Image/Wybor/kampervan.svg';
 import polintegra from './Campers/Image/Wybor/polintegra.svg';
+import axios from 'axios';
+
+
 
 const Camper = ({ setReservations }) => {
     const { isAuthenticated, currentUser } = useContext(AuthContext);
@@ -21,25 +24,21 @@ const Camper = ({ setReservations }) => {
         guests: ''
     });
     const [selectedCategory, setSelectedCategory] = useState('');
-    const [campersData] = useState([
-        { id: 1, name: 'Kamper A', description: 'Przestronny i komfortowy kamper.', weekdayPrice: 200, weekendPrice: 300, capacity: 4, category: 'alkowa', image: kamper1 },
-        { id: 2, name: 'Kamper B', description: 'Idealny na rodzinne wakacje.', weekdayPrice: 250, weekendPrice: 350, capacity: 6, category: 'integra', image: kamper2 },
-        { id: 3, name: 'Kamper C', description: 'Kompaktowy i łatwy w prowadzeniu.', weekdayPrice: 150, weekendPrice: 200, capacity: 2, category: 'kampervan', image: kamper3 },
-        { id: 4, name: 'Kamper D', description: 'Idealny na rodzinne wakacje.', weekdayPrice: 300, weekendPrice: 400, capacity: 7, category: 'integra', image: kamper4 }
-    ]);
 
     const navigate = useNavigate();
 
-    // Funkcja sprawdzająca, czy obecny dzień to weekend
-    const isWeekend = () => {
-        const today = new Date().getDay();
-        return today === 0 || today === 6; // Niedziela (0) lub Sobota (6)
-    };
+    const [campersData, setCampersData] = useState([])
 
-    // Oblicz dynamiczną cenę w zależności od dnia
-    const getPrice = (camper) => {
-        return isWeekend() ? camper.weekendPrice : camper.weekdayPrice;
-    };
+    useEffect(() => {
+        axios.get("http://localhost:8080/vehicle/all")
+        .then((res)=>{
+            console.log(res)
+            setCampersData(res.data)
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
+      },[]);
 
     const handleSearchChange = (e) => {
         const { name, value } = e.target;
