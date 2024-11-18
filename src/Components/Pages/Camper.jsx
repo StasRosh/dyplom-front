@@ -149,7 +149,7 @@ const Camper = ({ setReservations }) => {
                     <div className="camper-grid">
                         {filteredCampers.map(camper => (
                             <div key={camper.id} className="camper-card">
-                                <img src={camper.image} alt={camper.name} className="camper-image" />
+                                <img src={camper.imageLink} alt={camper.name} className="camper-image" />
                                 <h3>{camper.name}</h3>
                                 <p>{camper.description}</p>
                                 <p>

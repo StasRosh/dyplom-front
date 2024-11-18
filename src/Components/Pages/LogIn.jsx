@@ -2,9 +2,10 @@ import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../../Context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import './LogIn.css';
+import Cookies from 'js-cookie'
 
 const LogIn = ({ handleClose }) => {
-    const { login, currentUser, errorMessage } = useContext(AuthContext);  // Uzyskujemy dostęp do kontekstu
+    const { login, errorMessage } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const [email, setEmail] = useState('');
@@ -12,7 +13,7 @@ const LogIn = ({ handleClose }) => {
 
     // Efekt, który zamyka modal i przekierowuje na stronę główną po zalogowaniu
     useEffect(() => {
-        if (currentUser) {
+        if (Cookies.get("user_key")) {
             handleClose();  // Zamknięcie modala po zalogowaniu
             // Jeśli użytkownik jest administratorem, przekieruj do panelu admina
             if (currentUser.role === "admin") {
@@ -21,7 +22,7 @@ const LogIn = ({ handleClose }) => {
                 navigate('/');  // Inaczej przekierowanie na stronę główną
             }
         }
-    }, [currentUser, navigate, handleClose]);
+    }, [ navigate, handleClose]);
 
     // Funkcja do obsługi formularza logowania
     const handleSubmit = (e) => {

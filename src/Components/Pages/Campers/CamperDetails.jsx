@@ -76,7 +76,7 @@ const CamperDetails = () => {
     return (
         <div className="camper1-details">
             <h2>{camperData.name}</h2>
-            <img src={kamper4Image} alt="Kamper A" className="camper1-detail-image" />
+            <img src={camperData.imageLink} alt={camperData.name} className="camper1-detail-image" />
             <div className="camper1-gallery">
                 <img src={kamper2Image} alt="Kamper A - 1" />
                 <img src={kamper3Image} alt="Kamper A - 2" />
@@ -98,7 +98,7 @@ const CamperDetails = () => {
                             placeholder="Wpisz lokalizację"
                         />
                     </div>
-                    <div className="form-control">
+                    {/* <div className="form-control">
                         <label htmlFor="guests">Liczba gości:</label>
                         <input
                             id="guests"
@@ -107,7 +107,7 @@ const CamperDetails = () => {
                             onChange={(e) => setGuests(e.target.value)}
                             min="1"
                         />
-                    </div>
+                    </div> */}
 
                     {errorMessage && <p className="camper1-error-message">{errorMessage}</p>}
                 </div>

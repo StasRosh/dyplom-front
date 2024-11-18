@@ -3,20 +3,47 @@ import { AuthContext } from '../../Context/AuthContext';
 import { Modal, Button } from 'react-bootstrap';
 import './Reservations.css';
 import headerImage from './Image/img1.jpeg';
+import axios from 'axios';
+import Cookies from 'js-cookie'
+
+
 
 const Reservations = () => {
-    const { currentUser, reservations, removeReservation, acceptReservation } = useContext(AuthContext);
+    const { reservations,addReservation, removeReservation, acceptReservation, getReservations } = useContext(AuthContext);
     const [showModal, setShowModal] = useState(false);
     const [selectedReservation, setSelectedReservation] = useState(null);
+    const [userReservations, setUserReservations] = useState([]);
 
     // Wyświetlenie rezerwacji tylko dla zalogowanego użytkownika
-    const userReservations = reservations.filter(reservation => reservation.userId === currentUser?.id);
-    console.log("Rezerwacje dla użytkownika", currentUser?.id, ":", userReservations);
+    // const userReservations = reservations.filter(reservation => reservation.userId === currentUser?.id);
+    // console.log("Rezerwacje dla użytkownika", currentUser?.id, ":", userReservations);
+    
+
+    useEffect(() => {
+        getAllReservations()
+    },[]);
 
     // Funkcja do usuwania rezerwacji
     const handleDelete = (id) => {
         removeReservation(id);
+        getAllReservations();
     };
+    const getAllReservations = () => {
+        const config = {
+            headers: { 'Authorization': `Bearer ${Cookies.get("user_key")}` }
+        };
+        if(Cookies.get('user_id') != null){
+        axios.get("http://localhost:8080/reservation/"+Cookies.get("user_id"), config)
+        .then((res)=>{
+            console.log("reservations:")
+            setUserReservations(res.data)
+            console.log(res.data)
+            return res.data;
+        }).catch((err)=>{
+            console.log(err)
+        })        
+      }
+    }
 
     // Funkcja do otwierania modalu
     const handleOpenModal = (reservation) => {
@@ -37,7 +64,7 @@ const Reservations = () => {
     }, [reservations]);
 
     // Jeśli użytkownik nie jest zalogowany, wyświetlamy komunikat
-    if (!currentUser) {
+    if (!Cookies.get("user_id")) {
         return (
             <div className="reservations-container" style={{ marginTop: '80px' }}>
                 <h2>Musisz być zalogowany, aby zobaczyć swoje rezerwacje.</h2>
@@ -60,12 +87,12 @@ const Reservations = () => {
                 userReservations.map((reservation) => (
                     <div key={reservation.id} className="reservation-card">
                         <div className="reservation-details">
-                            <h3>{reservation.camper}</h3>
-                            {reservation.image ? (
+                            <h3>{reservation.vehicle.name}</h3>
+                            {reservation.vehicle.imageLink ? (
                                 <div className="reservation-image-container">
                                     <img
-                                        src={reservation.image}
-                                        alt={`Zdjęcie kampera: ${reservation.camper}`}
+                                        src={reservation.vehicle.imageLink}
+                                        alt={`Zdjęcie kampera: ${reservation.vehicle.name}`}
                                         className="reservation-image"
                                     />
                                 </div>
@@ -73,24 +100,10 @@ const Reservations = () => {
                                 <p>Brak zdjęcia</p>
                             )}
                             <p>
-                                Termin: <strong>{reservation.startDate} - {reservation.endDate}</strong>
+                                Termin: <strong>{reservation.start} - {reservation.end}</strong>
                             </p>
                             <p>Lokalizacja: {reservation.location}</p>
-                            <p>Ilość osób: {reservation.guests}</p>
-
-                            {/* Wyświetlanie statusu rezerwacji */}
-                            <p>Status: <strong>{reservation.status || 'Oczekujące'}</strong></p>
-
-                            {/* Przycisk do zmiany statusu */}
-                            {reservation.status === 'Oczekująca' && (
-                                <Button
-                                    onClick={() => acceptReservation(reservation.id)} // Akceptacja rezerwacji
-                                    className="btn btn-success"
-                                >
-                                    Zaakceptuj Rezerwację
-                                </Button>
-                            )}
-
+                            <p>Status: {reservation.order.orderStatus}</p>
                             <Button
                                 onClick={() => handleOpenModal(reservation)}
                                 className="btn btn-secondary"
