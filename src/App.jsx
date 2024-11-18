@@ -22,11 +22,11 @@ import AdminUsers from './Components/Pages/Admin/AdminUsers';
 import AdminCampers from './Components/Pages/Admin/AdminCampers';
 import AdminReservations from './Components/Pages/Admin/AdminReservations';
 import { AuthContext } from './Context/AuthContext';
-
+import { AuthContext } from './Context/AuthContext'; // Importujemy AuthContext
+import Cookies from 'js-cookie'
 const App = () => {
-    const { currentUser, addReservation, removeReservation, logout } = useContext(AuthContext);
+    const {  addReservation, removeReservation, logout } = useContext(AuthContext);
 
-    // Dodajemy stan dla kamperów
     const [campersData, setCampersData] = useState([]);
 
     // Wczytanie danych kamperów z localStorage
@@ -42,17 +42,18 @@ const App = () => {
                 {currentUser?.role === 'admin' ? (
                     <AdminHeader />
                 ) : (
-                    <Header currentUser={currentUser} logout={logout} />
+                    <Header currentUser={Cookies.get('user_id')} logout={logout} />
                 )}
                 
+
                 <main>
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/home" element={<Home />} />
                         <Route path="/contact" element={<Contact />} />
                         <Route path="/aboutus" element={<AboutUs />} />
-                        <Route path="/login" element={currentUser ? <Navigate to="/" /> : <LogIn />} />
-                        <Route path="/register" element={currentUser ? <Navigate to="/" /> : <Register />} />
+                        <Route path="/login" element={Cookies.get('user_id') ? <Navigate to="/" /> : <LogIn />} />
+                        <Route path="/register" element={Cookies.get('user_id') ? <Navigate to="/" /> : <Register />} />
                         <Route path="/camper/:camperId" element={<CamperDetails addReservation={addReservation} />} />
                         {/* <Route path="/camper/2" element={<Camper2 addReservation={addReservation} />} />
                         <Route path="/camper/3" element={<Camper3 addReservation={addReservation} />} /> */}

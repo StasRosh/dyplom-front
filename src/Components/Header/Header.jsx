@@ -6,9 +6,11 @@ import './Header.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../Context/AuthContext';
 import LogIn from '../Pages/LogIn';  // Zaimportuj komponent logowania
+import Cookies from 'js-cookie'
 
 const Header = () => {
-    const { currentUser, logout } = useContext(AuthContext);  // Uzyskujemy dane użytkownika z kontekstu
+
+    const { logout } = useContext(AuthContext);
     const navigate = useNavigate();
     const [showLoginModal, setShowLoginModal] = useState(false);  // Stan dla modala logowania
 
@@ -35,7 +37,7 @@ const Header = () => {
                         <Nav.Link as={Link} to="/contact">Kontakt</Nav.Link>
                         <Nav.Link as={Link} to="/camper">Campery</Nav.Link>
 
-                        {!currentUser ? (
+                        {!Cookies.get('user_id') ? (
                             <>
                                 <Nav.Link onClick={handleLoginModalShow}>Logowanie</Nav.Link>
                                 <Nav.Link as={Link} to="/register">Rejestracja</Nav.Link>
