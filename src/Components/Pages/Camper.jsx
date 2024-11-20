@@ -49,6 +49,19 @@ const Camper = ({ setReservations }) => {
         setSelectedCategory(category);
     };
 
+    const handleSearch = (e) =>{
+        e.preventDefault();
+        // console.log(searchParams)
+        axios.get('http://localhost:8080/reservation/find?begining='+searchParams.startDate+'&end='+searchParams.endDate)
+        .then((res)=>{
+            console.log(res)
+            setCampersData(res.data)
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
+    }
+
     const handleReservation = (camper) => {
         if (!isAuthenticated) {
             navigate(`/camper/${camper.id}`);
@@ -70,7 +83,7 @@ const Camper = ({ setReservations }) => {
     };
 
     const filteredCampers = campersData.filter(camper => 
-        (!selectedCategory || camper.category === selectedCategory) &&
+        (!selectedCategory || camper.vehicleType.name === selectedCategory) &&
         (!searchParams.guests || camper.capacity >= Number(searchParams.guests)) &&
         (!searchParams.location || camper.description.toLowerCase().includes(searchParams.location.toLowerCase()))
     );
@@ -82,7 +95,7 @@ const Camper = ({ setReservations }) => {
             </div>
             <hr className="divider" />
 
-            <form onSubmit={(e) => e.preventDefault()} className="camper-search-form">
+            <form onSubmit={handleSearch} className="camper-search-form">
                 <div className="camper-search-bar">
                     <input
                         type="date"
