@@ -3,7 +3,6 @@
     background-color: #fff;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-    padding: 20px;
 }
 
 /* Nagłówek kampera */
@@ -39,11 +38,12 @@
     border-radius: 5px;
     width: 220px;
     margin-bottom: 10px; /* Dodanie przestrzeni między polami */
+    box-sizing: border-box; /* Uwzględnia padding w szerokości */
 }
 
 .camper-search-button {
     padding: 10px 20px;
-    background-color: #007bff;
+    background-color: #555555;
     color: #fff;
     font-weight: bold;
     border: none;
@@ -51,10 +51,11 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
     width: auto;
+    box-sizing: border-box;
 }
 
 .camper-search-button:hover {
-    background-color: #0056b3;
+    background-color: #434343;
 }
 
 .camper-search-button:disabled {
@@ -82,6 +83,9 @@
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
+    flex-direction: column; /* Ustawienie kierunku na kolumny */
+    justify-content: space-between; /* Rozkłada elementy w pionie */
+    height: 100%; /* Zajmuje całą wysokość karty */
     transition: transform 0.3s ease;
 }
 
@@ -98,21 +102,30 @@
     margin-bottom: 15px;
 }
 
-/* Stylizacja przycisku */
+/* Stylizacja przycisku "Zarezerwuj" */
 .camper-btn {
     padding: 12px 20px;
-    background-color: #007bff;
+    background-color: #606060;
     color: #fff;
     font-weight: bold;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    width: 100%; /* Pełna szerokość przycisku */
+    width: auto; /* Ustawiamy szerokość przycisku na auto */
+    box-sizing: border-box;
 }
 
+/* Kontener dla przycisku "Zarezerwuj" */
+.camper-btn-container {
+    display: flex;
+    justify-content: center; /* Wyśrodkowanie przycisku poziomo */
+    margin-top: 20px;
+}
+
+/* Efekt najechania na przycisk */
 .camper-btn:hover {
-    background-color: #0056b3;
+    background-color: #464646;
 }
 
 /* Stylizacja przycisków kategorii */
@@ -123,6 +136,7 @@
 }
 
 .camper-category-icons {
+    margin-top: 50px;
     display: flex;
     justify-content: center;
     gap: 15px;
@@ -130,8 +144,8 @@
 }
 
 .category-icon {
-    width: 18%;
-    height: 18%;
+    width: 90%;
+    height: 80%;
     cursor: pointer;
     transition: transform 0.3s;
 }
@@ -162,6 +176,11 @@
         width: 120px;
         height: 120px;
     }
+
+    /* Dostosowanie rozmiaru zdjęć kamperów */
+    .camper-image {
+        height: 180px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -180,5 +199,10 @@
     .category-icon {
         width: 55px;
         height: 55px;
+    }
+
+    /* Dostosowanie szerokości zdjęć */
+    .camper-image {
+        height: 160px;
     }
 }

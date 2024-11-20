@@ -5,8 +5,9 @@ import './Camper.css';
 import kamper1 from './Image/image1.webp';
 import kamper2 from './Image/image2.webp';
 import kamper3 from './Image/image3.webp';
+import kamper4 from './Campers/Image/Camper4/camper4.webp';
 import headerImage from './Image/image6.jpeg';
-import alkowa from './Campers/Image/Wybor/alkowa.svg';  // Dodajemy nowe ikony
+import alkowa from './Campers/Image/Wybor/alkowa.svg'; 
 import integra from './Campers/Image/Wybor/integra.svg';
 import kampervan from './Campers/Image/Wybor/kampervan.svg';
 import polintegra from './Campers/Image/Wybor/polintegra.svg';
@@ -16,6 +17,7 @@ const campersData = [
     { id: 1, name: 'Kamper A', description: 'Przestronny i komfortowy kamper.', price: 200, capacity: 4, category: 'alkowa', image: kamper1 },
     { id: 2, name: 'Kamper B', description: 'Idealny na rodzinne wakacje.', price: 250, capacity: 6, category: 'integra', image: kamper2 },
     { id: 3, name: 'Kamper C', description: 'Kompaktowy i łatwy w prowadzeniu.', price: 150, capacity: 2, category: 'kampervan', image: kamper3 },
+    { id: 4, name: 'Kamper D', description: 'Idealny na rodzinne wakacje.', price: 300, capacity: 7, category: 'integra', image: kamper4 }
 ];
 
 const Camper = ({ setReservations }) => {
@@ -26,7 +28,7 @@ const Camper = ({ setReservations }) => {
         location: '',
         guests: ''
     });
-    const [selectedCategory, setSelectedCategory] = useState(''); // Dodajemy stan do wyboru kategorii
+    const [selectedCategory, setSelectedCategory] = useState(''); 
     const navigate = useNavigate();
 
     const handleSearchChange = (e) => {
@@ -35,7 +37,7 @@ const Camper = ({ setReservations }) => {
     };
 
     const handleCategoryClick = (category) => {
-        setSelectedCategory(category); // Ustawiamy wybraną kategorię
+        setSelectedCategory(category); 
     };
 
     const handleReservation = (camper) => {
@@ -57,7 +59,6 @@ const Camper = ({ setReservations }) => {
         }
     };
 
-    // Filtrujemy kampery według wybranej kategorii oraz innych parametrów
     const filteredCampers = campersData.filter(camper => 
         (!selectedCategory || camper.category === selectedCategory) &&
         (!searchParams.guests || camper.capacity >= Number(searchParams.guests)) &&
@@ -108,14 +109,27 @@ const Camper = ({ setReservations }) => {
                 </div>
                 <hr className="divider" />
             </form>
+
             {/* Sekcja Przegląd wszystkich kamperów */}
             <div className="camper-category-container">
                 <h3>Przegląd wszystkich kamperów</h3>
                 <div className="camper-category-icons">
-                    <img src={alkowa} alt="Alkowa" onClick={() => handleCategoryClick('alkowa')} className="category-icon" />
-                    <img src={integra} alt="Integra" onClick={() => handleCategoryClick('integra')} className="category-icon" />
-                    <img src={kampervan} alt="Kampervan" onClick={() => handleCategoryClick('kampervan')} className="category-icon" />
-                    <img src={polintegra} alt="Polintegra" onClick={() => handleCategoryClick('polintegra')} className="category-icon" />
+                    <div className="category-item" onClick={() => handleCategoryClick('alkowa')}>
+                        <img src={alkowa} alt="Alkowa" className="category-icon" />
+                        <span>Alkowa</span>
+                    </div>
+                    <div className="category-item" onClick={() => handleCategoryClick('integra')}>
+                        <img src={integra} alt="Integra" className="category-icon" />
+                        <span>Integra</span>
+                    </div>
+                    <div className="category-item" onClick={() => handleCategoryClick('kampervan')}>
+                        <img src={kampervan} alt="Kampervan" className="category-icon" />
+                        <span>Kampervan</span>
+                    </div>
+                    <div className="category-item" onClick={() => handleCategoryClick('polintegra')}>
+                        <img src={polintegra} alt="Polintegra" className="category-icon" />
+                        <span>Polintegra</span>
+                    </div>
                 </div>
             </div>
 

@@ -14,6 +14,7 @@ import Reservations from './Components/Pages/Reservations';
 import Camper1 from './Components/Pages/Campers/Camper1';
 import Camper2 from './Components/Pages/Campers/Camper2';
 import Camper3 from './Components/Pages/Campers/Camper3';
+import Camper4 from './Components/Pages/Campers/Camper4';
 import { AuthContext } from './Context/AuthContext'; // Importujemy AuthContext
 
 const App = () => {
@@ -34,6 +35,7 @@ const App = () => {
                         <Route path="/camper/1" element={<Camper1 addReservation={addReservation} />} />
                         <Route path="/camper/2" element={<Camper2 addReservation={addReservation} />} />
                         <Route path="/camper/3" element={<Camper3 addReservation={addReservation} />} />
+                        <Route path="/camper/4" element={<Camper4 addReservation={addReservation} />} />
                         <Route path="/camper" element={<Camper addReservation={addReservation} />} />
                         <Route 
                             path="/reservations" 

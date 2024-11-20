@@ -2,7 +2,6 @@ import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../../Context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import './LogIn.css';
-import loginImage from './Image/kamper10.png';
 
 const LogIn = ({ handleClose }) => {
     const { login, currentUser, errorMessage } = useContext(AuthContext);
@@ -25,9 +24,6 @@ const LogIn = ({ handleClose }) => {
 
     return (
         <div className="login-container">
-            <div className="image-header">
-                <img src={loginImage} alt="Logowanie" className="login-image" />
-            </div>
             <hr className="divider" />
             <h2>Logowanie</h2>
             <div className="form-container">
