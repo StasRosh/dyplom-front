@@ -9,6 +9,7 @@ import kamper4Image from './Image/Camper1/image5.jpeg';
 import Calendar from 'react-calendar';  // Importujemy react-calendar
 import 'react-calendar/dist/Calendar.css';  // Importujemy stylowanie kalendarza
 import axios from 'axios';
+import Cookies from 'js-cookie'
 
 const CamperDetails = () => {
     const { currentUser, addReservation, reservations, removeReservation } = useContext(AuthContext);
@@ -42,7 +43,7 @@ const CamperDetails = () => {
 
     // Funkcja rezerwacji
     const handleReserve = () => {
-        if (!currentUser) return navigate('/login');  // Sprawdzenie, czy użytkownik jest zalogowany
+        if (!Cookies.get("user_key")) return navigate('/login');  // Sprawdzenie, czy użytkownik jest zalogowany
         if (!startDate || !endDate || !location || guests < 1) return setErrorMessage('Proszę wypełnić wszystkie pola.');
         if (new Date(startDate) < new Date() || new Date(endDate) < new Date() || new Date(startDate) >= new Date(endDate)) {
             return setErrorMessage('Kamper jest niedostępny w wybranym terminie.');

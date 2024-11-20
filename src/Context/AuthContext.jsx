@@ -5,9 +5,10 @@ import Cookies from 'js-cookie'
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [currentUser, setCurrentUser] = useState(null);
-    const [users, setUsers] = useState([]);
-    const [reservations, setReservations] = useState([]);
+    const [currentUser, setCurrentUser] = useState(null);  // Stan dla aktualnego użytkownika
+    const [errorMessage, setErrorMessage] = useState("")
+    const [users, setUsers] = useState([]);  // Stan dla wszystkich użytkowników
+    const [reservations, setReservations] = useState([]); // Stan dla rezerwacji
     const [notifications, setNotifications] = useState([]);
 
     useEffect(() => {
@@ -48,8 +49,13 @@ export const AuthProvider = ({ children }) => {
             // console.log((res.data));
             document.cookie = 'user_key=' + res.data.token + ';expires=' + new Date(new Date().getTime() + 3600000).toGMTString() + ';'
             Cookies.set("user_id",res.data.id)
+            setErrorMessage('')
+            return true;
         }).catch(function (error) {
             console.log(error);
+            setErrorMessage("Nieprawidłowe dane logowania")
+            console.log(errorMessage)
+            return false;
         });
 
 
@@ -112,7 +118,7 @@ export const AuthProvider = ({ children }) => {
         };
         var data = {
 
-            vehicleId: newReservation.camperId,
+            vehicleId: newReservation.vehicleId,
             reservationStartDate: (newReservation.reservationStartDate),
             reservationEndDate: (newReservation.reservationEndDate),
             comments: "string",
@@ -121,6 +127,7 @@ export const AuthProvider = ({ children }) => {
         }
         console.log("auth:")
         console.log(newReservation)
+        console.log(data)
         axios.post("http://localhost:8080/reservation", data, config)
             .then((res) => {
                 console.log(res)
@@ -128,7 +135,7 @@ export const AuthProvider = ({ children }) => {
                 console.log(err)
             })
 
-        if (Cookies.get("user_key")) {
+        if (!Cookies.get("user_key")) {
             alert("Musisz być zalogowany, aby dodać rezerwację.");
             return;
         }
@@ -173,6 +180,7 @@ export const AuthProvider = ({ children }) => {
             removeReservation,
             cancelReservation, // Dodajemy funkcję cancelReservation
             getCamperById,
+            errorMessage,
             addReservation,
             removeReservation,
             getReservations,

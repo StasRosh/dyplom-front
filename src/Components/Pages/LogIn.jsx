@@ -6,6 +6,7 @@ import Cookies from 'js-cookie'
 
 const LogIn = ({ handleClose }) => {
     const { login, errorMessage } = useContext(AuthContext);
+    const [refresh, setRefresh] = useState(true);
     const navigate = useNavigate();
 
     const [email, setEmail] = useState('');
@@ -22,12 +23,14 @@ const LogIn = ({ handleClose }) => {
                 navigate('/');  // Inaczej przekierowanie na stronę główną
             }
         }
-    }, [ navigate, handleClose]);
+    }, [ navigate, handleClose, refresh]);
 
     // Funkcja do obsługi formularza logowania
     const handleSubmit = (e) => {
         e.preventDefault();
-        login(email, password);  // Próba logowania użytkownika
+        setRefresh(!refresh)
+        login(email, password)
+          // Próba logowania użytkownika
     };
 
     return (
