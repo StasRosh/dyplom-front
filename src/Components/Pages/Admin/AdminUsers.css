@@ -1,0 +1,17 @@
+.admin-users {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.admin-users h2 {
+    margin-bottom: 20px;
+}
+
+.admin-users .table {
+    background-color: #ffffff;
+}
+
+.admin-users .btn {
+    margin-right: 5px;
+}

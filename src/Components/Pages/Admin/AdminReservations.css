@@ -1,0 +1,35 @@
+.admin-reservations-container {
+    padding: 20px;
+}
+
+.admin-reservation-card {
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.reservation-details h3 {
+    margin-bottom: 10px;
+}
+
+.reservation-image-container img {
+    max-width: 100px;
+    max-height: 80px;
+    object-fit: cover;
+}
+
+.admin-reservations-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    background-color: #f8f9fa;
+}
+
+.modal-footer .btn {
+    margin-left: 10px;
+}

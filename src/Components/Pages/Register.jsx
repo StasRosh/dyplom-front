@@ -1,11 +1,11 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../../Context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import './Register.css';
 import registerImage from './Image/kamper10.png';
 
 const Register = () => {
-    const { register, currentUser, errorMessage } = useContext(AuthContext);  // Dodajemy przekierowanie i obsługę błędów z kontekstu
+    const { register, currentUser, registrationMessage, setRegistrationMessage } = useContext(AuthContext);  
     const navigate = useNavigate();
 
     const [email, setEmail] = useState('');
@@ -16,21 +16,24 @@ const Register = () => {
     const [address, setAddress] = useState('');
     const [error, setError] = useState(null);
 
+    useEffect(() => {
+        if (currentUser) {
+            setRegistrationMessage(null); // Resetuj komunikat po udanej rejestracji
+            navigate('/');  
+        }
+    }, [currentUser, navigate, setRegistrationMessage]);
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        const newUser = { email, password, firstName, lastName, phoneNumber, address };
-
+        
         if (!email || !password || !firstName || !lastName || !phoneNumber || !address) {
             setError('Proszę wypełnić wszystkie pola.');
             return;
         }
 
         setError(null);
+        const newUser = { email, password, firstName, lastName, phoneNumber, address };
         register(newUser);
-        
-        if (currentUser) {
-            navigate('/');  // Przekierowanie po udanej rejestracji
-        }
     };
 
     return (
@@ -42,6 +45,7 @@ const Register = () => {
             <h2>Rejestracja</h2>
             <div className="form-container">
                 <form onSubmit={handleSubmit}>
+                    {/* Pola formularza */}
                     <div className="form-group">
                         <label htmlFor="firstName">Imię:</label>
                         <input
@@ -111,11 +115,8 @@ const Register = () => {
                     <button type="submit" className="btn btn-primary">Zarejestruj się</button>
                 </form>
 
-                {(error || errorMessage) && (
-                    <div className="error-message">
-                        {error || errorMessage}
-                    </div>
-                )}
+                {error && <div className="error-message">{error}</div>}
+                {registrationMessage && !currentUser && <div className="error-message">{registrationMessage}</div>}
             </div>
             <hr className="divider" />
         </div>

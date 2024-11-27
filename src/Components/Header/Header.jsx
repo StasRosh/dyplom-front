@@ -1,3 +1,4 @@
+// Header.js
 import React, { useContext, useState } from 'react';
 import { Container, Navbar, Nav, Modal, Button } from 'react-bootstrap';
 import logo from './GoCamper.png';
@@ -7,7 +8,7 @@ import { AuthContext } from '../../Context/AuthContext';
 import LogIn from '../Pages/LogIn';  // Zaimportuj komponent logowania
 
 const Header = () => {
-    const { currentUser, logout } = useContext(AuthContext);
+    const { currentUser, logout } = useContext(AuthContext);  // Uzyskujemy dane użytkownika z kontekstu
     const navigate = useNavigate();
     const [showLoginModal, setShowLoginModal] = useState(false);  // Stan dla modala logowania
 
@@ -42,6 +43,12 @@ const Header = () => {
                         ) : (
                             <>
                                 <Nav.Link as={Link} to="/reservations">Rezerwacje</Nav.Link>
+                                
+                                {/* Link do panelu administracyjnego, jeśli użytkownik jest administratorem */}
+                                {currentUser.role === 'admin' && (
+                                    <Nav.Link as={Link} to="/admin">Panel Administratora</Nav.Link>
+                                )}
+
                                 <Nav.Link as={Link} to="/" onClick={handleLogout}>Wyloguj się</Nav.Link>
                             </>
                         )}

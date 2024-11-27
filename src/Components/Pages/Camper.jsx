@@ -1,5 +1,5 @@
-import React, { useContext, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../Context/AuthContext'; 
 import './Camper.css';
 import kamper1 from './Image/image1.webp';
@@ -12,24 +12,28 @@ import integra from './Campers/Image/Wybor/integra.svg';
 import kampervan from './Campers/Image/Wybor/kampervan.svg';
 import polintegra from './Campers/Image/Wybor/polintegra.svg';
 
-// Przykładowe dane kamperów z kategoriami
-const campersData = [
-    { id: 1, name: 'Kamper A', description: 'Przestronny i komfortowy kamper.', price: 200, capacity: 4, category: 'alkowa', image: kamper1 },
-    { id: 2, name: 'Kamper B', description: 'Idealny na rodzinne wakacje.', price: 250, capacity: 6, category: 'integra', image: kamper2 },
-    { id: 3, name: 'Kamper C', description: 'Kompaktowy i łatwy w prowadzeniu.', price: 150, capacity: 2, category: 'kampervan', image: kamper3 },
-    { id: 4, name: 'Kamper D', description: 'Idealny na rodzinne wakacje.', price: 300, capacity: 7, category: 'integra', image: kamper4 }
-];
-
 const Camper = ({ setReservations }) => {
-    const { isAuthenticated, currentUser } = useContext(AuthContext); 
+    const { isAuthenticated, currentUser } = useContext(AuthContext);
     const [searchParams, setSearchParams] = useState({
         startDate: '',
         endDate: '',
         location: '',
         guests: ''
     });
-    const [selectedCategory, setSelectedCategory] = useState(''); 
+    const [selectedCategory, setSelectedCategory] = useState('');
+    const [campersData, setCampersData] = useState([
+        { id: 1, name: 'Kamper A', description: 'Przestronny i komfortowy kamper.', price: 200, capacity: 4, category: 'alkowa', image: kamper1 },
+        { id: 2, name: 'Kamper B', description: 'Idealny na rodzinne wakacje.', price: 250, capacity: 6, category: 'integra', image: kamper2 },
+        { id: 3, name: 'Kamper C', description: 'Kompaktowy i łatwy w prowadzeniu.', price: 150, capacity: 2, category: 'kampervan', image: kamper3 },
+        { id: 4, name: 'Kamper D', description: 'Idealny na rodzinne wakacje.', price: 300, capacity: 7, category: 'integra', image: kamper4 }
+    ]);
+
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const savedCampers = JSON.parse(localStorage.getItem('campers')) || [];
+        setCampersData(savedCampers);
+    }, []);
 
     const handleSearchChange = (e) => {
         const { name, value } = e.target;
@@ -37,7 +41,7 @@ const Camper = ({ setReservations }) => {
     };
 
     const handleCategoryClick = (category) => {
-        setSelectedCategory(category); 
+        setSelectedCategory(category);
     };
 
     const handleReservation = (camper) => {

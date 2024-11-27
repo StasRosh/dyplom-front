@@ -1,11 +1,11 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../../Context/AuthContext';
 import { Modal, Button } from 'react-bootstrap';
 import './Reservations.css';
 import headerImage from './Image/img1.jpeg';
 
 const Reservations = () => {
-    const { currentUser, reservations, addReservation, removeReservation } = useContext(AuthContext);
+    const { currentUser, reservations, removeReservation, acceptReservation } = useContext(AuthContext);
     const [showModal, setShowModal] = useState(false);
     const [selectedReservation, setSelectedReservation] = useState(null);
 
@@ -29,6 +29,12 @@ const Reservations = () => {
         setShowModal(false);
         setSelectedReservation(null);
     };
+
+    // Monitorowanie zmian w statusie rezerwacji
+    useEffect(() => {
+        // Za każdym razem, gdy rezerwacje się zmieniają, zapisujemy je w localStorage
+        localStorage.setItem('reservations', JSON.stringify(reservations));
+    }, [reservations]);
 
     // Jeśli użytkownik nie jest zalogowany, wyświetlamy komunikat
     if (!currentUser) {
@@ -71,6 +77,20 @@ const Reservations = () => {
                             </p>
                             <p>Lokalizacja: {reservation.location}</p>
                             <p>Ilość osób: {reservation.guests}</p>
+
+                            {/* Wyświetlanie statusu rezerwacji */}
+                            <p>Status: <strong>{reservation.status || 'Oczekujące'}</strong></p>
+
+                            {/* Przycisk do zmiany statusu */}
+                            {reservation.status === 'Oczekująca' && (
+                                <Button
+                                    onClick={() => acceptReservation(reservation.id)} // Akceptacja rezerwacji
+                                    className="btn btn-success"
+                                >
+                                    Zaakceptuj Rezerwację
+                                </Button>
+                            )}
+
                             <Button
                                 onClick={() => handleOpenModal(reservation)}
                                 className="btn btn-secondary"
@@ -100,6 +120,7 @@ const Reservations = () => {
                         <p><strong>Data zakończenia:</strong> {selectedReservation.endDate}</p>
                         <p><strong>Lokalizacja:</strong> {selectedReservation.location}</p>
                         <p><strong>Ilość osób:</strong> {selectedReservation.guests}</p>
+                        <p><strong>Status:</strong> {selectedReservation.status}</p>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={handleCloseModal}>

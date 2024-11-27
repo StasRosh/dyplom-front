@@ -4,19 +4,26 @@ import { useNavigate } from 'react-router-dom';
 import './LogIn.css';
 
 const LogIn = ({ handleClose }) => {
-    const { login, currentUser, errorMessage } = useContext(AuthContext);
+    const { login, currentUser, errorMessage } = useContext(AuthContext);  // Uzyskujemy dostęp do kontekstu
     const navigate = useNavigate();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    // Efekt, który zamyka modal i przekierowuje na stronę główną po zalogowaniu
     useEffect(() => {
         if (currentUser) {
             handleClose();  // Zamknięcie modala po zalogowaniu
-            navigate('/');  // Przekierowanie na stronę główną po zalogowaniu
+            // Jeśli użytkownik jest administratorem, przekieruj do panelu admina
+            if (currentUser.role === "admin") {
+                navigate('/admin');  
+            } else {
+                navigate('/');  // Inaczej przekierowanie na stronę główną
+            }
         }
     }, [currentUser, navigate, handleClose]);
 
+    // Funkcja do obsługi formularza logowania
     const handleSubmit = (e) => {
         e.preventDefault();
         login(email, password);  // Próba logowania użytkownika
