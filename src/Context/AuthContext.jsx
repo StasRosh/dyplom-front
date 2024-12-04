@@ -49,7 +49,11 @@ export const AuthProvider = ({ children }) => {
         // console.log("login: " + JSON.stringify(data))
         axios.post("http://localhost:8080/auth/login", data
         ).then((res) => {
-            // console.log((res.data));
+            console.log((res));
+            if(res.data == "invalid user data"){
+                alert(res.data)
+                return ;
+            }
             document.cookie = 'user_key=' + res.data.token + ';expires=' + new Date(new Date().getTime() + 3600000).toGMTString() + ';'
             Cookies.set("user_id",res.data.id)
             setErrorMessage('')
@@ -77,7 +81,6 @@ export const AuthProvider = ({ children }) => {
         setReservations([]);
         document.cookie = 'user_key=; Max-Age=0';
         Cookies.remove("user_id")
-
         // localStorage.removeItem('currentUser'); // Usuwamy użytkownika z localStorage
         // localStorage.removeItem('reservations'); // Usuwamy rezerwacje z localStorage
     };
@@ -116,6 +119,12 @@ export const AuthProvider = ({ children }) => {
     };
 
     const addReservation = (newReservation) => {
+
+        
+        if (Cookies.get("user_key") == "undefined"  || !Cookies.get("user_key")) {
+            alert("Musisz być zalogowany, aby dodać rezerwację.");
+            return;
+        }
         const config = {
             headers: { 'Authorization': `Bearer ${Cookies.get("user_key")}` }
         };
@@ -134,24 +143,23 @@ export const AuthProvider = ({ children }) => {
         axios.post("http://localhost:8080/reservation", data, config)
             .then((res) => {
                 console.log(res)
+                if(res.data != "Success")
+                    alert(res.data)
             }).catch((err) => {
                 console.log(err)
             })
 
-        if (!Cookies.get("user_key")) {
-            alert("Musisz być zalogowany, aby dodać rezerwację.");
-            return;
-        }
 
-        newReservation.userId = currentUser.id; // Przypisujemy rezerwację do użytkownika
+        // newReservation.userId = currentUser.id; // Przypisujemy rezerwację do użytkownika
 
-        setReservations((prevReservations) => {
-            const updatedReservations = [...prevReservations, newReservation];
-            const allReservations = JSON.parse(localStorage.getItem('reservations')) || [];
-            allReservations.push(newReservation); // Dodajemy rezerwację do globalnego zbioru
-            localStorage.setItem('reservations', JSON.stringify(allReservations)); // Zapisujemy do localStorage
-            return updatedReservations;
-        });
+        // setReservations((prevReservations) => {
+        //     const updatedReservations = [...prevReservations, newReservation];
+        //     const allReservations = JSON.parse(localStorage.getItem('reservations')) || [];
+        //     allReservations.push(newReservation); // Dodajemy rezerwację do globalnego zbioru
+        //     localStorage.setItem('reservations', JSON.stringify(allReservations)); // Zapisujemy do localStorage
+        //     return updatedReservations;
+        // });
+
     };
 
     // Funkcja do usuwania rezerwacji

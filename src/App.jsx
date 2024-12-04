@@ -62,6 +62,7 @@ const App = () => {
                         <Route path="/camper/:camperId" element={<CamperDetails addReservation={addReservation} />} />
                         {/* <Route path="/camper/2" element={<Camper2 addReservation={addReservation} />} />
                         <Route path="/camper/3" element={<Camper3 addReservation={addReservation} />} /> */}
+                        <Route path='/static' element={<Camper1 addReservation={addReservation}/>} />
                         <Route path="/camper" element={<Camper addReservation={addReservation} />} />
                         <Route path="/reservations" element={<Reservations removeReservation={removeReservation} />} />
 

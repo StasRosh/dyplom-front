@@ -165,11 +165,8 @@ const Camper = ({ setReservations }) => {
                                 <img src={camper.imageLink} alt={camper.name} className="camper-image" />
                                 <h3>{camper.name}</h3>
                                 <p>{camper.description}</p>
-                                <p>
-                                    Cena: {getPrice(camper)} zł/dzień 
-                                    ({isWeekend() ? 'Weekend' : 'Dzień tygodnia'})
-                                </p>
-                                <p>Ilość osób: {camper.capacity}</p>
+                                {/* <p>Cena: {camper.price} zł/dzień</p> */}
+                                {/* <p>Ilość osób: {camper.capacity}</p> */}
                                 <button
                                     onClick={() => handleReservation(camper)}
                                     className="camper-btn btn-primary">
