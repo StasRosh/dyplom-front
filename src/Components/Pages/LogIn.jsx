@@ -31,6 +31,10 @@ const LogIn = ({ handleClose }) => {
         setRefresh(!refresh)
         login(email, password)
           // Próba logowania użytkownika
+          if (Cookies.get("user_key") != "undefined") {
+            handleClose();  // Zamknięcie modala po zalogowaniu
+            navigate('/');  // Przekierowanie na stronę główną po zalogowaniu
+        }
     };
 
     return (
