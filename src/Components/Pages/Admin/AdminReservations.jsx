@@ -8,14 +8,20 @@ const AdminReservations = () => {
     const [reservations, setReservations] = useState([]);
 
     useEffect(() => {
-        if (currentUser && currentUser.role === 'admin') {
-            const fetchedReservations = getReservationsByUserId();
-            setReservations(fetchedReservations);
-        } else if (currentUser) {
-            const fetchedReservations = getReservationsByUserId(currentUser.id);
+        // if (currentUser && currentUser.role === 'admin') {
+        async function getReservations(userid) {
+            const fetchedReservations = await getReservationsByUserId(); // Wszystkie rezerwacje dla administratora
             setReservations(fetchedReservations);
         }
-    }, [currentUser, getReservationsByUserId]);
+        getReservations();
+        console.log("reservation")
+        console.log(reservations)
+        // } else if (currentUser) {
+        //     const fetchedReservations = getReservationsByUserId(currentUser.id); // Rezerwacje tylko dla zalogowanego użytkownika
+        //     setReservations(fetchedReservations);
+        // }
+    }, [currentUser, getReservationsByUserId]
+    );
 
     const handleAccept = (reservationId) => {
         acceptReservation(reservationId);

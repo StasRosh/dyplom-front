@@ -17,7 +17,7 @@ const LogIn = ({ handleClose }) => {
         if (Cookies.get("user_key")) {
             handleClose();  // Zamknięcie modala po zalogowaniu
             // Jeśli użytkownik jest administratorem, przekieruj do panelu admina
-            if (currentUser.role === "admin") {
+            if (Cookies.get('admin') == "1") {
                 navigate('/admin');  
             } else {
                 navigate('/');  // Inaczej przekierowanie na stronę główną

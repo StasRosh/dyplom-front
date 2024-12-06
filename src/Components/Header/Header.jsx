@@ -47,7 +47,7 @@ const Header = () => {
                                 <Nav.Link as={Link} to="/reservations">Rezerwacje</Nav.Link>
                                 
                                 {/* Link do panelu administracyjnego, jeśli użytkownik jest administratorem */}
-                                {currentUser.role === 'admin' && (
+                                {Cookies.get('admin') == "1" && (
                                     <Nav.Link as={Link} to="/admin">Panel Administratora</Nav.Link>
                                 )}
 

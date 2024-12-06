@@ -10,7 +10,10 @@ export const AuthProvider = ({ children }) => {
     const [users, setUsers] = useState([]);  // Stan dla wszystkich użytkowników
     const [reservations, setReservations] = useState([]); // Stan dla rezerwacji
     const [notifications, setNotifications] = useState([]);
-    const [insurances, setInsurances] = useState([]);
+
+    const config = {
+        headers: { 'Authorization': `Bearer ${Cookies.get("user_key")}` }
+    };
 
     // Pobieranie danych z localStorage przy uruchomieniu
     useEffect(() => {
@@ -54,10 +57,15 @@ export const AuthProvider = ({ children }) => {
                 alert(res.data)
                 return ;
             }
-            document.cookie = 'user_key=' + res.data.token + ';expires=' + new Date(new Date().getTime() + 3600000).toGMTString() + ';'
-            Cookies.set("user_id",res.data.id)
+            // document.cookie = 'user_key=' + res.data.token + ';expires=' + new Date(new Date().getTime() + 3600000).toGMTString() + ';'
+            var thirtyMinutes = new Date(new Date().getTime() + 30 * 60 * 1000);
+            Cookies.set("user_id",res.data.id,{expires: thirtyMinutes})
+            Cookies.set("user_key",res.data.token,{expires: thirtyMinutes})
+            if(res.data.admin == true){
+                Cookies.set("admin","1",{expires: thirtyMinutes})
+            }
             setErrorMessage('')
-            return true;
+            window.location.reload();
         }).catch(function (error) {
             console.log(error);
             setErrorMessage("Nieprawidłowe dane logowania")
@@ -79,8 +87,9 @@ export const AuthProvider = ({ children }) => {
 
     const logout = () => {
         setReservations([]);
-        document.cookie = 'user_key=; Max-Age=0';
+        Cookies.remove("user_key")
         Cookies.remove("user_id")
+        Cookies.remove("admin")
         // localStorage.removeItem('currentUser'); // Usuwamy użytkownika z localStorage
         // localStorage.removeItem('reservations'); // Usuwamy rezerwacje z localStorage
     };
@@ -173,6 +182,142 @@ export const AuthProvider = ({ children }) => {
         });
     };
 
+    const getAllUsers = async () =>{
+        console.log("get all users");
+        const config = {
+            headers: { 'Authorization': `Bearer ${Cookies.get("user_key")}` }
+        };
+        return axios.get("http://localhost:8080/user/all",config)
+        .then((res)=>{
+            console.log(res.data);
+            return res.data;
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
+
+    }
+
+    const updateUserRole = ()=>{
+        console.log("update user role")
+    }
+
+    const toggleBlockUser = async () => {
+        console.log("toggle block user")
+        return axios.get("http://localhost:8080/user/block")
+    }
+
+    const getReservationsByUserId = async (id) =>{
+        console.log("get reservations by user id")
+        if (id==undefined){
+           return axios.get("http://localhost:8080/reservation",config)
+            .then((res)=>{
+                console.log(res.data)
+                return res.data
+            })
+            .catch((err)=>{
+                console.log(err)
+            })
+        }
+    }
+
+    const acceptReservation = async (id) => {
+        console.log("accept reservation"+id)
+
+        return axios.get(`http://localhost:8080/reservation/accept/${id}`,config)
+        .then((res)=>{
+            console.log(res)
+            return res.data
+        })
+        .catch((err)=>{
+            return err
+        })
+    }
+
+    const deleteUser = (userId) =>{
+        console.log("delete user")
+
+        axios.delete(`http://localhost:8080/user/delete?id=${userId}`,config)
+        .then((res)=>{
+            console.log(res.data)
+        }).catch((err)=>{
+            console.log(err)
+        })
+    }
+
+    const cancelReservation = async(id) =>{
+        console.log("cancel reservation")
+
+        return axios.get(`http://localhost:8080/reservation/cancel/${id}`,config)
+        .then((res)=>{
+            console.log(res)
+            return res.data
+        })
+        .catch((err)=>{
+            return err
+        })
+    }
+
+    const getCamperById = () =>{
+        console.log("get camper by id")
+    }
+    const getAllCampers = async ()=>{
+        console.log("all campers")
+
+        return axios.get(`http://localhost:8080/vehicle/all`,config)
+        .then((res)=>{
+            console.log(res)
+            return res.data
+        })
+        .catch((err)=>{
+            return err
+        })
+
+
+    }
+    const getReservations = () => {
+        console.log("get reservations")
+    }
+
+
+    const addCamper = (camperData) =>{
+        console.log("add camper")
+        axios.post("http://localhost:8080/vehicle/add",camperData,config)
+        .then((res)=>{
+            console.log(res)
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
+    }
+
+    const deleteCamper = (camperId) =>{
+        console.log("delete camper: "+camperId)
+        axios.delete(`http://localhost:8080/vehicle/delete/${camperId}`,config)
+        .then((res)=>{
+            console.log(res)
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
+    }
+
+    const updateCamper = (camperData) =>{
+        console.log("update camper")
+        console.log(camperData)
+
+        axios.patch(`http://localhost:8080/vehicle/update/${camperData.id}`,camperData,config)
+        .then((res)=>{
+            console.log(res)
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
+    }
+
+
+
+
     return (
         <AuthContext.Provider value={{
             users,
@@ -191,8 +336,10 @@ export const AuthProvider = ({ children }) => {
             removeReservation,
             cancelReservation,
             getCamperById,
-            addInsurance,
-            getInsurancesByCamperId,
+            getAllCampers,
+            addCamper,
+            deleteCamper,
+            updateCamper,
             errorMessage,
             addReservation,
             removeReservation,
