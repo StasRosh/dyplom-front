@@ -21,7 +21,6 @@ import Camper4 from './Components/Pages/Campers/Camper4';
 import AdminUsers from './Components/Pages/Admin/AdminUsers';
 import AdminCampers from './Components/Pages/Admin/AdminCampers';
 import AdminReservations from './Components/Pages/Admin/AdminReservations';
-import { AuthContext } from './Context/AuthContext';
 import { AuthContext } from './Context/AuthContext'; // Importujemy AuthContext
 import Cookies from 'js-cookie'
 const App = () => {
@@ -39,7 +38,7 @@ const App = () => {
         <Router>
             <div className="App">
                 {/* Renderowanie nagłówka w zależności od roli użytkownika */}
-                {currentUser?.role === 'admin' ? (
+                {Cookies.get('admin') == "1" ? (
                     <AdminHeader />
                 ) : (
                     <Header currentUser={Cookies.get('user_id')} logout={logout} />
@@ -64,19 +63,19 @@ const App = () => {
                         {/* Trasy administracyjne */}
                         <Route 
                             path="/admin" 
-                            element={currentUser?.role === 'admin' ? <AdminPage /> : <Navigate to="/" />}
+                            element={Cookies.get('admin') == "1" ? <AdminPage /> : <Navigate to="/" />}
                         />
                         <Route 
                             path="/admin/users" 
-                            element={currentUser?.role === 'admin' ? <AdminUsers /> : <Navigate to="/" />}
+                            element={Cookies.get('admin') == "1" ? <AdminUsers /> : <Navigate to="/" />}
                         />
                         <Route 
                             path="/admin/campers" 
-                            element={currentUser?.role === 'admin' ? <AdminCampers campersData={campersData} setCampersData={setCampersData} /> : <Navigate to="/" />}
+                            element={Cookies.get('admin') == "1" ? <AdminCampers campersData={campersData} setCampersData={setCampersData} /> : <Navigate to="/" />}
                         />
                         <Route 
                             path="/admin/reservations" 
-                            element={currentUser?.role === 'admin' ? <AdminReservations /> : <Navigate to="/" />}
+                            element={Cookies.get('admin') == "1" ? <AdminReservations /> : <Navigate to="/" />}
                         />
                     </Routes>
                 </main>

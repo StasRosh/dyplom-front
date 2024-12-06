@@ -1,23 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './AdminCampers.css';
+import { AuthContext } from '../../../Context/AuthContext';
 
-const AdminCampers = ({ campersData = [], setCampersData }) => {
+const AdminCampers = () => {
     const [newCamper, setNewCamper] = useState({
         name: '',
         description: '',
         price: 0,
         capacity: 0,
-        category: '',
+        vehicleTypeId: '',
         image: ''  // Dodanie pola na zdjęcie
     });
+    const { getAllCampers,addCamper,deleteCamper,updateCamper } = useContext(AuthContext);
 
     const [editingCamper, setEditingCamper] = useState(null);
+    const [campersData, setCampersData] = useState([]);
 
     // Załaduj kampery z localStorage, jeśli nie zostały przekazane przez props
     useEffect(() => {
+        async function getCamperData() {
+            setCampersData(await getAllCampers())
+        }
         if (campersData.length === 0) {
-            const savedCampers = JSON.parse(localStorage.getItem('campers')) || [];
-            setCampersData(savedCampers);
+            getCamperData();
+
         }
     }, [campersData, setCampersData]);
 
@@ -29,35 +35,42 @@ const AdminCampers = ({ campersData = [], setCampersData }) => {
 
     // Obsługuje zmianę obrazu
     const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setNewCamper((prev) => ({
-                    ...prev,
-                    image: reader.result // Zapisujemy obraz w base64
-                }));
-            };
-            reader.readAsDataURL(file); // Czytanie obrazu jako base64
-        }
+
+        setNewCamper((prev) => ({
+            ...prev,
+            image: e.target.value // Zapisujemy obraz w base64
+        }));
+        // const file = e.target.files[0];
+        // if (file) {
+        //     const reader = new FileReader();
+        //     reader.onloadend = () => {
+        //         setNewCamper((prev) => ({
+        //             ...prev,
+        //             image: reader.result // Zapisujemy obraz w base64
+        //         }));
+        //     };
+        //     reader.readAsDataURL(file); // Czytanie obrazu jako base64
+        // }
+    
     };
 
     // Dodawanie nowego kampera
     const handleAddCamper = () => {
-        if (!newCamper.name || !newCamper.description || !newCamper.price || !newCamper.capacity || !newCamper.category || !newCamper.image) {
+        if (!newCamper.name || !newCamper.description || !newCamper.price || !newCamper.capacity || !newCamper.vehicleTypeId || !newCamper.image) {
             alert('Wszystkie pola muszą być wypełnione!');
             return;
         }
         const newCamperData = {
-            ...newCamper,
-            id: new Date().getTime(),
-        };
-        setCampersData((prevData) => {
-            const updatedCampers = [...prevData, newCamperData];
-            localStorage.setItem('campers', JSON.stringify(updatedCampers));  // Zapisz w localStorage
-            return updatedCampers;
-        });
-        setNewCamper({ name: '', description: '', price: 0, capacity: 0, category: '', image: '' }); // Resetujemy formularz
+            name: newCamper.name,
+            vehicleStatus: "AVAILABLE",
+            imageLink: newCamper.image,
+            vehicleTypeId: newCamper.vehicleTypeId,
+            id: 0,
+            comment: "string",
+            description: newCamper.description
+          }
+        addCamper(newCamperData);
+        setNewCamper({ name: '', description: '', price: 0, capacity: 0, vehicleTypeId: '', image: '' }); // Resetujemy formularz
     };
 
     // Edytowanie kampera
@@ -67,23 +80,23 @@ const AdminCampers = ({ campersData = [], setCampersData }) => {
 
     // Zapisanie edytowanego kampera
     const handleSaveEdit = () => {
-        if (!editingCamper.name || !editingCamper.description || !editingCamper.price || !editingCamper.capacity || !editingCamper.category || !editingCamper.image) {
+
+        if (!editingCamper.name || !editingCamper.description || !editingCamper.price || !editingCamper.capacity || !editingCamper.vehicleTypeId || !editingCamper.imageLink) {
             alert('Wszystkie pola muszą być wypełnione!');
+            console.log(editingCamper)
             return;
         }
-        const updatedCampers = campersData.map((camper) =>
-            camper.id === editingCamper.id ? editingCamper : camper
-        );
-        setCampersData(updatedCampers);
-        localStorage.setItem('campers', JSON.stringify(updatedCampers));  // Zapisz w localStorage
+
+        console.log(editingCamper)
+        
+        updateCamper(editingCamper)
+
         setEditingCamper(null);
     };
 
     // Usuwanie kampera
     const handleDeleteCamper = (camperId) => {
-        const updatedCampers = campersData.filter((camper) => camper.id !== camperId);
-        setCampersData(updatedCampers);
-        localStorage.setItem('campers', JSON.stringify(updatedCampers));  // Zapisz w localStorage
+        deleteCamper(camperId)
     };
 
     // Obsługuje zmiany w formularzu edycji kampera
@@ -94,17 +107,23 @@ const AdminCampers = ({ campersData = [], setCampersData }) => {
 
     // Obsługuje zmianę obrazu podczas edycji kampera
     const handleEditImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setEditingCamper((prev) => ({
-                    ...prev,
-                    image: reader.result // Zapisujemy obraz w base64
-                }));
-            };
-            reader.readAsDataURL(file);
-        }
+
+        setEditingCamper((prev) => ({
+            ...prev,
+            imageLink: e.target.value // Zapisujemy obraz w base64
+        }));
+
+        // const file = e.target.files[0];
+        // if (file) {
+        //     const reader = new FileReader();
+        //     reader.onloadend = () => {
+        //         setEditingCamper((prev) => ({
+        //             ...prev,
+        //             image: reader.result // Zapisujemy obraz w base64
+        //         }));
+        //     };
+        //     reader.readAsDataURL(file);
+        // }
     };
 
     return (
@@ -145,21 +164,22 @@ const AdminCampers = ({ campersData = [], setCampersData }) => {
                     min="1"
                 />
                 <select
-                    name="category"
-                    value={newCamper.category}
+                    name="vehicleTypeId"
+                    value={newCamper.vehicleTypeId}
                     onChange={handleInputChange}
                 >
                     <option value="">Wybierz kategorię</option>
-                    <option value="Alkowa">Alkowa</option>
-                    <option value="Integra">Integra</option>
-                    <option value="Kampervan">Kampervan</option>
-                    <option value="Polintegra">Polintegra</option>
+                    <option value="1">Alkowa</option>
+                    <option value="2">Integra</option>
+                    <option value="3">Kampervan</option>
+                    <option value="4">Polintegra</option>
                 </select>
-                <input
+                {/* <input
                     type="file"
                     onChange={handleImageChange}
                     accept="image/*"
-                />
+                /> */}
+                <input type="text" onChange={handleImageChange} />
                 {newCamper.image && (
                     <img src={newCamper.image} alt="Podgląd zdjęcia" style={{ maxWidth: '200px', marginTop: '10px' }} />
                 )}
@@ -203,20 +223,21 @@ const AdminCampers = ({ campersData = [], setCampersData }) => {
                         min="1"
                     />
                     <select
-                        name="category"
-                        value={editingCamper.category}
+                        name="vehicleTypeId"
+                        value={editingCamper.vehicleTypeId}
                         onChange={handleEditChange}
                     >
-                        <option value="Alkowa">Alkowa</option>
-                        <option value="Integra">Integra</option>
-                        <option value="Kampervan">Kampervan</option>
-                        <option value="Polintegra">Polintegra</option>
+                        <option value="1">Alkowa</option>
+                        <option value="2">Integra</option>
+                        <option value="3">Kampervan</option>
+                        <option value="4">Polintegra</option>
                     </select>
-                    <input
+                    {/* <input
                         type="file"
                         onChange={handleEditImageChange}
                         accept="image/*"
-                    />
+                    /> */}
+                    <input type="text" onChange={handleEditImageChange} />
                     {editingCamper.image && (
                         <img src={editingCamper.image} alt="Podgląd zdjęcia" style={{ maxWidth: '200px', marginTop: '10px' }} />
                     )}
@@ -231,14 +252,15 @@ const AdminCampers = ({ campersData = [], setCampersData }) => {
                 {Array.isArray(campersData) && campersData.length > 0 ? (
                     campersData.map((camper) => (
                         <div key={camper.id} className="camper-card">
-                            <h3>{camper.name}</h3>
+                            <h3>{camper.name}  [{camper.id}]</h3>
                             <p>{camper.description}</p>
-                            <p>Cena: {camper.price} zł/dzień</p>
+                            {/* <p>Cena: {camper.price} zł/dzień</p> */}
                             <p>Ilość osób: {camper.capacity}</p>
-                            <p>Kategoria: {camper.category}</p>
-                            {camper.image && (
-                                <img src={camper.image} alt="Zdjęcie kampera" style={{ maxWidth: '200px', marginTop: '10px' }} />
+                            <p>Kategoria: {camper.vehicleType.name}</p>
+                            {camper.imageLink && (
+                                <img src={camper.imageLink} alt="Zdjęcie kampera" style={{ maxWidth: '200px', marginTop: '10px' }} />
                             )}
+                            <br/>
                             <button onClick={() => handleEditCamper(camper)}>Edytuj</button>
                             <button onClick={() => handleDeleteCamper(camper.id)}>Usuń</button>
                         </div>

@@ -9,6 +9,8 @@ const AdminUsers = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             const userList = await getAllUsers();
+            console.log("users:")
+            console.log(userList);
             setUsers(userList);
         };
 
@@ -17,7 +19,6 @@ const AdminUsers = () => {
 
     const handleDelete = (userId) => {
         deleteUser(userId);
-        setUsers(users.filter(user => user.id !== userId));
     };
 
     const handleBlockToggle = (userId, isBlocked) => {
