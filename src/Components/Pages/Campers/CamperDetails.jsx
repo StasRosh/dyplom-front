@@ -37,7 +37,7 @@ const CamperDetails = () => {
 
     useEffect(() => {
         console.log(camperId)
-        axios.get("http://localhost:8080/vehicle/" + camperId)
+        axios.get("http://localhost:8080/vehicle/id/" + camperId)
             .then((res) => {
                 console.log(res)
                 setCamperData(res.data)

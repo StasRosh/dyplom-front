@@ -25,14 +25,17 @@ const AdminReservations = () => {
 
     const handleAccept = (reservationId) => {
         acceptReservation(reservationId);
+        window.location.reload()
     };
 
     const handleCancel = (reservationId) => {
         cancelReservation(reservationId);
+        window.location.reload()
     };
 
     const handleRemove = (reservationId) => {
         removeReservation(reservationId);
+        window.location.reload()
     };
 
     const getCamperById = (camperId) => {

@@ -173,13 +173,13 @@ export const AuthProvider = ({ children }) => {
 
     // Funkcja do usuwania rezerwacji
     const removeReservation = (reservationId) => {
-        setReservations((prevReservations) => {
-            const updatedReservations = prevReservations.filter(reservation => reservation.id !== reservationId);
-            const allReservations = JSON.parse(localStorage.getItem('reservations')) || [];
-            const filteredReservations = allReservations.filter(reservation => reservation.id !== reservationId); // Usuwamy rezerwację globalnie
-            localStorage.setItem('reservations', JSON.stringify(filteredReservations));
-            return updatedReservations;
-        });
+        axios.delete(`http://localhost:8080/reservation/${reservationId}`,config)
+        .then((res)=>{
+            console.log(res)
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
     };
 
     const getAllUsers = async () =>{
@@ -202,15 +202,21 @@ export const AuthProvider = ({ children }) => {
         console.log("update user role")
     }
 
-    const toggleBlockUser = async () => {
+    const toggleBlockUser = async (userId) => {
         console.log("toggle block user")
-        return axios.get("http://localhost:8080/user/block")
+        return axios.get("http://localhost:8080/user/block/"+userId,config)
+        .then((res)=>{
+            console.log(res)
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
     }
 
     const getReservationsByUserId = async (id) =>{
         console.log("get reservations by user id")
         if (id==undefined){
-           return axios.get("http://localhost:8080/reservation",config)
+           return axios.get("http://localhost:8080/reservation/all",config)
             .then((res)=>{
                 console.log(res.data)
                 return res.data

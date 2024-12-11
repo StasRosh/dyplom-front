@@ -20,13 +20,12 @@ const AdminUsers = () => {
 
     const handleDelete = (userId) => {
         deleteUser(userId);
+        window.location.reload()
     };
 
     const handleBlockToggle = (userId, isBlocked) => {
-        toggleBlockUser(userId, !isBlocked);
-        setUsers(users.map(user => 
-            user.id === userId ? { ...user, isBlocked: !isBlocked } : user
-        ));
+        toggleBlockUser(userId);
+        window.location.reload()
     };
 
     return (
@@ -48,7 +47,7 @@ const AdminUsers = () => {
                             <td>{user.id}</td>
                             <td>{user.name}</td>
                             <td>{user.email}</td>
-                            <td>{user.isBlocked ? 'Zablokowany' : 'Aktywny'}</td>
+                            <td>{user.acive ? 'Zablokowany' : 'Aktywny'}</td>
                             <td>
                                 <Button 
                                     variant="danger" 
