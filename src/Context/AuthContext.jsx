@@ -7,15 +7,15 @@ export const AuthProvider = ({ children }) => {
     const [users, setUsers] = useState([]);
     const [reservations, setReservations] = useState([]);
     const [notifications, setNotifications] = useState([]);
+    const [insurances, setInsurances] = useState([]);
 
+    // Pobieranie danych z localStorage przy uruchomieniu
     useEffect(() => {
-        // Pobieramy użytkownika z localStorage
         const storedUser = JSON.parse(localStorage.getItem('currentUser'));
         if (storedUser) {
             setCurrentUser(storedUser);
         }
 
-        // Pobieramy użytkowników z localStorage
         const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
         const updatedUsers = storedUsers.map(user => {
             if (!user.registeredAt) {
@@ -27,13 +27,19 @@ export const AuthProvider = ({ children }) => {
         setUsers(updatedUsers);
         localStorage.setItem('users', JSON.stringify(updatedUsers));
 
-        // Jeśli użytkownik jest zalogowany, wczytujemy jego rezerwacje
         if (storedUser) {
             const storedReservations = JSON.parse(localStorage.getItem('reservations')) || [];
             const userReservations = storedReservations.filter(reservation => reservation.userId === storedUser.id);
             setReservations(userReservations);
         }
+
+        const storedInsurances = JSON.parse(localStorage.getItem('insurances')) || [];
+        setInsurances(storedInsurances);
     }, []);
+
+    useEffect(() => {
+        localStorage.setItem('insurances', JSON.stringify(insurances));
+    }, [insurances]);
 
     const login = (email, password) => {
         const user = users.find(user => user.email === email && user.password === password);
@@ -75,7 +81,7 @@ export const AuthProvider = ({ children }) => {
 
         const updatedUsers = [...users, newUser];
         setUsers(updatedUsers);
-        localStorage.setItem('users', JSON.stringify(updatedUsers)); // Zapisywanie zaktualizowanych użytkowników
+        localStorage.setItem('users', JSON.stringify(updatedUsers));
         setCurrentUser(newUser);
         localStorage.setItem('currentUser', JSON.stringify(newUser));
 
@@ -102,17 +108,15 @@ export const AuthProvider = ({ children }) => {
         alert("Rezerwacja została usunięta.");
     };
 
-    // Nowa funkcja do anulowania rezerwacji (zmienia status na "Anulowana")
     const cancelReservation = (reservationId) => {
         setReservations(prevReservations =>
             prevReservations.map(reservation =>
                 reservation.id === reservationId
-                    ? { ...reservation, status: 'Anulowana' }  // Zmiana statusu na 'Anulowana'
+                    ? { ...reservation, status: 'Anulowana' }
                     : reservation
             )
         );
 
-        // Aktualizujemy rezerwacje w localStorage
         const allReservations = JSON.parse(localStorage.getItem('reservations')) || [];
         const updatedReservationsInStorage = allReservations.map(reservation =>
             reservation.id === reservationId
@@ -127,19 +131,15 @@ export const AuthProvider = ({ children }) => {
     const getReservationsByUserId = (userId) => {
         const allReservations = JSON.parse(localStorage.getItem('reservations')) || [];
         if (currentUser && currentUser.role === 'admin') {
-            // Dla administratora zwróć wszystkie rezerwacje
             return allReservations;
         } else if (currentUser && currentUser.id === userId) {
-            // Dla zwykłego użytkownika zwróć tylko jego rezerwacje
             return allReservations.filter(reservation => reservation.userId === userId);
         } else {
             return [];
         }
     };
 
-    const getAllUsers = () => {
-        return users;
-    };
+    const getAllUsers = () => users;
 
     const updateUserRole = (userId, newRole) => {
         const updatedUsers = users.map(user =>
@@ -159,17 +159,14 @@ export const AuthProvider = ({ children }) => {
 
     const deleteUser = (userId) => {
         if (currentUser && currentUser.role === 'admin') {
-            // Usuń użytkownika z listy użytkowników
             const updatedUsers = users.filter(user => user.id !== userId);
             setUsers(updatedUsers);
             localStorage.setItem('users', JSON.stringify(updatedUsers));
 
-            // Usuń rezerwacje związane z tym użytkownikiem
             const updatedReservations = reservations.filter(reservation => reservation.userId !== userId);
             setReservations(updatedReservations);
             localStorage.setItem('reservations', JSON.stringify(updatedReservations));
 
-            // Usuń rezerwacje użytkownika z globalnej listy rezerwacji
             const allReservations = JSON.parse(localStorage.getItem('reservations')) || [];
             const updatedReservationsInStorage = allReservations.filter(reservation => reservation.userId !== userId);
             localStorage.setItem('reservations', JSON.stringify(updatedReservationsInStorage));
@@ -186,37 +183,41 @@ export const AuthProvider = ({ children }) => {
             const updatedReservations = allReservations.map(reservation =>
                 reservation.id === reservationId ? { ...reservation, status: 'Zaakceptowana' } : reservation
             );
-    
+
             setReservations(updatedReservations);
             localStorage.setItem('reservations', JSON.stringify(updatedReservations));
-    
+
             const acceptedReservation = updatedReservations.find(reservation => reservation.id === reservationId);
             const user = users.find(user => user.id === acceptedReservation.userId);
             if (user) {
-                const newNotification = `Rezerwacja nr ${reservationId} została zaakceptowana. Dziękujemy za cierpliwość!`;
+                const newNotification = `Rezerwacja nr ${reservationId} została zaakceptowana.`;
                 setNotifications(prevNotifications => [...prevNotifications, newNotification]);
-    
+
                 alert(`Rezerwacja użytkownika ${user.firstName} ${user.lastName} została zaakceptowana.`);
             }
         } else {
             alert("Tylko administrator może zatwierdzić rezerwacje.");
         }
     };
-    // Funkcja do pobierania kampera na podstawie jego ID
-const getCamperById = (camperId) => {
-    // Pobieramy dane kamperów z localStorage (jeśli istnieją)
-    const allCampers = JSON.parse(localStorage.getItem('campers')) || [];
-    
-    // Znajdujemy kampera o podanym ID
-    const camper = allCampers.find(camper => camper.id === camperId);
 
-    // Zwracamy kampera, jeśli istnieje, lub null, jeśli nie znaleziono
-    return camper || null;
-};
+    const getCamperById = (camperId) => {
+        const allCampers = JSON.parse(localStorage.getItem('campers')) || [];
+        return allCampers.find(camper => camper.id === camperId) || null;
+    };
 
-    
-    
-    
+    const addInsurance = (newInsurance) => {
+        setInsurances(prev => {
+            const updatedInsurances = [...prev, newInsurance];
+            localStorage.setItem('insurances', JSON.stringify(updatedInsurances));
+            return updatedInsurances;
+        });
+        alert('Ubezpieczenie zostało pomyślnie dodane!');
+    };
+
+    const getInsurancesByCamperId = (camperId) => {
+        return insurances.filter(insurance => insurance.camperId === camperId);
+    };
+
     return (
         <AuthContext.Provider value={{
             currentUser,
@@ -234,8 +235,10 @@ const getCamperById = (camperId) => {
             acceptReservation,
             deleteUser,
             removeReservation,
-            cancelReservation, // Dodajemy funkcję cancelReservation
+            cancelReservation,
             getCamperById,
+            addInsurance,
+            getInsurancesByCamperId,
         }}>
             {children}
         </AuthContext.Provider>

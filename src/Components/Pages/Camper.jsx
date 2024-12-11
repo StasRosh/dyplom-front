@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../Context/AuthContext'; 
 import './Camper.css';
@@ -21,19 +21,25 @@ const Camper = ({ setReservations }) => {
         guests: ''
     });
     const [selectedCategory, setSelectedCategory] = useState('');
-    const [campersData, setCampersData] = useState([
-        { id: 1, name: 'Kamper A', description: 'Przestronny i komfortowy kamper.', price: 200, capacity: 4, category: 'alkowa', image: kamper1 },
-        { id: 2, name: 'Kamper B', description: 'Idealny na rodzinne wakacje.', price: 250, capacity: 6, category: 'integra', image: kamper2 },
-        { id: 3, name: 'Kamper C', description: 'Kompaktowy i łatwy w prowadzeniu.', price: 150, capacity: 2, category: 'kampervan', image: kamper3 },
-        { id: 4, name: 'Kamper D', description: 'Idealny na rodzinne wakacje.', price: 300, capacity: 7, category: 'integra', image: kamper4 }
+    const [campersData] = useState([
+        { id: 1, name: 'Kamper A', description: 'Przestronny i komfortowy kamper.', weekdayPrice: 200, weekendPrice: 300, capacity: 4, category: 'alkowa', image: kamper1 },
+        { id: 2, name: 'Kamper B', description: 'Idealny na rodzinne wakacje.', weekdayPrice: 250, weekendPrice: 350, capacity: 6, category: 'integra', image: kamper2 },
+        { id: 3, name: 'Kamper C', description: 'Kompaktowy i łatwy w prowadzeniu.', weekdayPrice: 150, weekendPrice: 200, capacity: 2, category: 'kampervan', image: kamper3 },
+        { id: 4, name: 'Kamper D', description: 'Idealny na rodzinne wakacje.', weekdayPrice: 300, weekendPrice: 400, capacity: 7, category: 'integra', image: kamper4 }
     ]);
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const savedCampers = JSON.parse(localStorage.getItem('campers')) || [];
-        setCampersData(savedCampers);
-    }, []);
+    // Funkcja sprawdzająca, czy obecny dzień to weekend
+    const isWeekend = () => {
+        const today = new Date().getDay();
+        return today === 0 || today === 6; // Niedziela (0) lub Sobota (6)
+    };
+
+    // Oblicz dynamiczną cenę w zależności od dnia
+    const getPrice = (camper) => {
+        return isWeekend() ? camper.weekendPrice : camper.weekdayPrice;
+    };
 
     const handleSearchChange = (e) => {
         const { name, value } = e.target;
@@ -57,6 +63,7 @@ const Camper = ({ setReservations }) => {
                 guests: searchParams.guests,
                 image: camper.image,
                 userId: currentUser.id,
+                price: getPrice(camper) // Dodaj dynamiczną cenę do rezerwacji
             };
             setReservations((prevReservations) => [...prevReservations, reservation]);
             navigate('/reservations');
@@ -114,7 +121,6 @@ const Camper = ({ setReservations }) => {
                 <hr className="divider" />
             </form>
 
-            {/* Sekcja Przegląd wszystkich kamperów */}
             <div className="camper-category-container">
                 <h3>Przegląd wszystkich kamperów</h3>
                 <div className="camper-category-icons">
@@ -147,7 +153,10 @@ const Camper = ({ setReservations }) => {
                                 <img src={camper.image} alt={camper.name} className="camper-image" />
                                 <h3>{camper.name}</h3>
                                 <p>{camper.description}</p>
-                                <p>Cena: {camper.price} zł/dzień</p>
+                                <p>
+                                    Cena: {getPrice(camper)} zł/dzień 
+                                    ({isWeekend() ? 'Weekend' : 'Dzień tygodnia'})
+                                </p>
                                 <p>Ilość osób: {camper.capacity}</p>
                                 <button
                                     onClick={() => handleReservation(camper)}

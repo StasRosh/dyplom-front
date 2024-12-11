@@ -5,29 +5,25 @@ const AdminCampers = ({ campersData = [], setCampersData }) => {
     const [newCamper, setNewCamper] = useState({
         name: '',
         description: '',
-        price: 0,
-        capacity: 0,
+        weekdayPrice: '',
+        weekendPrice: '',
+        capacity: '',
         category: '',
-        image: ''  // Dodanie pola na zdjęcie
+        image: ''
     });
 
     const [editingCamper, setEditingCamper] = useState(null);
 
-    // Załaduj kampery z localStorage, jeśli nie zostały przekazane przez props
     useEffect(() => {
-        if (campersData.length === 0) {
-            const savedCampers = JSON.parse(localStorage.getItem('campers')) || [];
-            setCampersData(savedCampers);
-        }
-    }, [campersData, setCampersData]);
+        const savedCampers = JSON.parse(localStorage.getItem('campers')) || [];
+        setCampersData(savedCampers);
+    }, [setCampersData]);
 
-    // Obsługuje zmiany w formularzu dodawania nowego kampera
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setNewCamper((prev) => ({ ...prev, [name]: value }));
     };
 
-    // Obsługuje zmianę obrazu
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -35,16 +31,15 @@ const AdminCampers = ({ campersData = [], setCampersData }) => {
             reader.onloadend = () => {
                 setNewCamper((prev) => ({
                     ...prev,
-                    image: reader.result // Zapisujemy obraz w base64
+                    image: reader.result
                 }));
             };
-            reader.readAsDataURL(file); // Czytanie obrazu jako base64
+            reader.readAsDataURL(file);
         }
     };
 
-    // Dodawanie nowego kampera
     const handleAddCamper = () => {
-        if (!newCamper.name || !newCamper.description || !newCamper.price || !newCamper.capacity || !newCamper.category || !newCamper.image) {
+        if (!newCamper.name || !newCamper.description || !newCamper.weekdayPrice || !newCamper.weekendPrice || !newCamper.capacity || !newCamper.category || !newCamper.image) {
             alert('Wszystkie pola muszą być wypełnione!');
             return;
         }
@@ -52,22 +47,18 @@ const AdminCampers = ({ campersData = [], setCampersData }) => {
             ...newCamper,
             id: new Date().getTime(),
         };
-        setCampersData((prevData) => {
-            const updatedCampers = [...prevData, newCamperData];
-            localStorage.setItem('campers', JSON.stringify(updatedCampers));  // Zapisz w localStorage
-            return updatedCampers;
-        });
-        setNewCamper({ name: '', description: '', price: 0, capacity: 0, category: '', image: '' }); // Resetujemy formularz
+        const updatedCampers = [...campersData, newCamperData];
+        setCampersData(updatedCampers);
+        localStorage.setItem('campers', JSON.stringify(updatedCampers));
+        setNewCamper({ name: '', description: '', weekdayPrice: '', weekendPrice: '', capacity: '', category: '', image: '' });
     };
 
-    // Edytowanie kampera
     const handleEditCamper = (camper) => {
         setEditingCamper(camper);
     };
 
-    // Zapisanie edytowanego kampera
     const handleSaveEdit = () => {
-        if (!editingCamper.name || !editingCamper.description || !editingCamper.price || !editingCamper.capacity || !editingCamper.category || !editingCamper.image) {
+        if (!editingCamper.name || !editingCamper.description || !editingCamper.weekdayPrice || !editingCamper.weekendPrice || !editingCamper.capacity || !editingCamper.category || !editingCamper.image) {
             alert('Wszystkie pola muszą być wypełnione!');
             return;
         }
@@ -75,24 +66,21 @@ const AdminCampers = ({ campersData = [], setCampersData }) => {
             camper.id === editingCamper.id ? editingCamper : camper
         );
         setCampersData(updatedCampers);
-        localStorage.setItem('campers', JSON.stringify(updatedCampers));  // Zapisz w localStorage
+        localStorage.setItem('campers', JSON.stringify(updatedCampers));
         setEditingCamper(null);
     };
 
-    // Usuwanie kampera
     const handleDeleteCamper = (camperId) => {
         const updatedCampers = campersData.filter((camper) => camper.id !== camperId);
         setCampersData(updatedCampers);
-        localStorage.setItem('campers', JSON.stringify(updatedCampers));  // Zapisz w localStorage
+        localStorage.setItem('campers', JSON.stringify(updatedCampers));
     };
 
-    // Obsługuje zmiany w formularzu edycji kampera
     const handleEditChange = (e) => {
         const { name, value } = e.target;
         setEditingCamper((prev) => ({ ...prev, [name]: value }));
     };
 
-    // Obsługuje zmianę obrazu podczas edycji kampera
     const handleEditImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -100,7 +88,7 @@ const AdminCampers = ({ campersData = [], setCampersData }) => {
             reader.onloadend = () => {
                 setEditingCamper((prev) => ({
                     ...prev,
-                    image: reader.result // Zapisujemy obraz w base64
+                    image: reader.result
                 }));
             };
             reader.readAsDataURL(file);
@@ -111,7 +99,6 @@ const AdminCampers = ({ campersData = [], setCampersData }) => {
         <div className="admin-camper-container">
             <h2>Admin Panel: Zarządzanie Kamperami</h2>
 
-            {/* Formularz dodawania nowego kampera */}
             <div className="admin-form">
                 <h3>Dodaj nowego kampera</h3>
                 <input
@@ -130,10 +117,18 @@ const AdminCampers = ({ campersData = [], setCampersData }) => {
                 />
                 <input
                     type="number"
-                    name="price"
-                    value={newCamper.price}
+                    name="weekdayPrice"
+                    value={newCamper.weekdayPrice}
                     onChange={handleInputChange}
-                    placeholder="Cena"
+                    placeholder="Cena (dzień tygodnia)"
+                    min="1"
+                />
+                <input
+                    type="number"
+                    name="weekendPrice"
+                    value={newCamper.weekendPrice}
+                    onChange={handleInputChange}
+                    placeholder="Cena (weekend)"
                     min="1"
                 />
                 <input
@@ -150,10 +145,10 @@ const AdminCampers = ({ campersData = [], setCampersData }) => {
                     onChange={handleInputChange}
                 >
                     <option value="">Wybierz kategorię</option>
-                    <option value="Alkowa">Alkowa</option>
-                    <option value="Integra">Integra</option>
-                    <option value="Kampervan">Kampervan</option>
-                    <option value="Polintegra">Polintegra</option>
+                    <option value="alkowa">Alkowa</option>
+                    <option value="integra">Integra</option>
+                    <option value="kampervan">Kampervan</option>
+                    <option value="polintegra">Polintegra</option>
                 </select>
                 <input
                     type="file"
@@ -168,7 +163,6 @@ const AdminCampers = ({ campersData = [], setCampersData }) => {
 
             <hr />
 
-            {/* Formularz edycji kampera */}
             {editingCamper && (
                 <div className="admin-form">
                     <h3>Edytuj kampera</h3>
@@ -188,10 +182,18 @@ const AdminCampers = ({ campersData = [], setCampersData }) => {
                     />
                     <input
                         type="number"
-                        name="price"
-                        value={editingCamper.price}
+                        name="weekdayPrice"
+                        value={editingCamper.weekdayPrice}
                         onChange={handleEditChange}
-                        placeholder="Cena"
+                        placeholder="Cena (dzień tygodnia)"
+                        min="1"
+                    />
+                    <input
+                        type="number"
+                        name="weekendPrice"
+                        value={editingCamper.weekendPrice}
+                        onChange={handleEditChange}
+                        placeholder="Cena (weekend)"
                         min="1"
                     />
                     <input
@@ -207,10 +209,10 @@ const AdminCampers = ({ campersData = [], setCampersData }) => {
                         value={editingCamper.category}
                         onChange={handleEditChange}
                     >
-                        <option value="Alkowa">Alkowa</option>
-                        <option value="Integra">Integra</option>
-                        <option value="Kampervan">Kampervan</option>
-                        <option value="Polintegra">Polintegra</option>
+                        <option value="alkowa">Alkowa</option>
+                        <option value="integra">Integra</option>
+                        <option value="kampervan">Kampervan</option>
+                        <option value="polintegra">Polintegra</option>
                     </select>
                     <input
                         type="file"
@@ -225,7 +227,6 @@ const AdminCampers = ({ campersData = [], setCampersData }) => {
                 </div>
             )}
 
-            {/* Lista kamperów */}
             <div className="camper-list">
                 <h3>Lista kamperów</h3>
                 {Array.isArray(campersData) && campersData.length > 0 ? (
@@ -233,18 +234,19 @@ const AdminCampers = ({ campersData = [], setCampersData }) => {
                         <div key={camper.id} className="camper-card">
                             <h3>{camper.name}</h3>
                             <p>{camper.description}</p>
-                            <p>Cena: {camper.price} zł/dzień</p>
+                            <p>Cena (dzień tygodnia): {camper.weekdayPrice} zł</p>
+                            <p>Cena (weekend): {camper.weekendPrice} zł</p>
                             <p>Ilość osób: {camper.capacity}</p>
                             <p>Kategoria: {camper.category}</p>
                             {camper.image && (
-                                <img src={camper.image} alt="Zdjęcie kampera" style={{ maxWidth: '200px', marginTop: '10px' }} />
+                                <img src={camper.image} alt="Zdjęcie kampera" style={{ maxWidth: '100px' }} />
                             )}
                             <button onClick={() => handleEditCamper(camper)}>Edytuj</button>
                             <button onClick={() => handleDeleteCamper(camper.id)}>Usuń</button>
                         </div>
                     ))
                 ) : (
-                    <p>Brak dostępnych kamperów</p>
+                    <p>Brak kamperów.</p>
                 )}
             </div>
         </div>

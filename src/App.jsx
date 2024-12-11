@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from './Components/Header/Header';
-import AdminHeader from './Components/Header/AdminHeader';  // Importowanie nagłówka dla administratora
+import AdminHeader from './Components/Header/AdminHeader'; // Nagłówek dla administratora
 import Contact from './Components/Pages/Contact';
 import Footer from './Components/Footer/Footer';
 import Home from './Components/Pages/Home';
@@ -20,12 +20,16 @@ import Camper4 from './Components/Pages/Campers/Camper4';
 import AdminUsers from './Components/Pages/Admin/AdminUsers';
 import AdminCampers from './Components/Pages/Admin/AdminCampers';
 import AdminReservations from './Components/Pages/Admin/AdminReservations';
+import AdminRepairs from './Components/Pages/Admin/AdminRepairs';
+import AdminReports from './Components/Pages/Admin/AdminReports';
+import AdminPrices from './Components/Pages/Admin/AdminPrices';
+import AdminInsurances from './Components/Pages/Admin/AdminInsurances';
 import { AuthContext } from './Context/AuthContext';
 
 const App = () => {
     const { currentUser, addReservation, removeReservation, logout } = useContext(AuthContext);
 
-    // Dodajemy stan dla kamperów
+    // Stan dla kamperów
     const [campersData, setCampersData] = useState([]);
 
     // Wczytanie danych kamperów z localStorage
@@ -43,9 +47,10 @@ const App = () => {
                 ) : (
                     <Header currentUser={currentUser} logout={logout} />
                 )}
-                
+
                 <main>
                     <Routes>
+                        {/* Publiczne trasy */}
                         <Route path="/" element={<Home />} />
                         <Route path="/home" element={<Home />} />
                         <Route path="/contact" element={<Contact />} />
@@ -60,22 +65,44 @@ const App = () => {
                         <Route path="/reservations" element={<Reservations removeReservation={removeReservation} />} />
 
                         {/* Trasy administracyjne */}
-                        <Route 
-                            path="/admin" 
+                        <Route
+                            path="/admin"
                             element={currentUser?.role === 'admin' ? <AdminPage /> : <Navigate to="/" />}
                         />
-                        <Route 
-                            path="/admin/users" 
+                        <Route
+                            path="/admin/users"
                             element={currentUser?.role === 'admin' ? <AdminUsers /> : <Navigate to="/" />}
                         />
-                        <Route 
-                            path="/admin/campers" 
+                        <Route
+                            path="/admin/campers"
                             element={currentUser?.role === 'admin' ? <AdminCampers campersData={campersData} setCampersData={setCampersData} /> : <Navigate to="/" />}
                         />
-                        <Route 
-                            path="/admin/reservations" 
+                        <Route
+                            path="/admin/reservations"
                             element={currentUser?.role === 'admin' ? <AdminReservations /> : <Navigate to="/" />}
                         />
+                        <Route
+                            path="/admin/repairs"
+                            element={currentUser?.role === 'admin' ? <AdminRepairs /> : <Navigate to="/" />}
+                        />
+                        <Route
+                            path="/admin/reports"
+                            element={currentUser?.role === 'admin' ? <AdminReports /> : <Navigate to="/" />}
+                        />
+                        <Route
+                            path="/admin/prices"
+                            element={currentUser?.role === 'admin' ? <AdminPrices /> : <Navigate to="/" />}
+                        />
+                        <Route
+                           path="/admin/insurances"
+                           element={currentUser?.role === 'admin' ? (<AdminInsurances campersData={campersData} />
+                           ) : (
+                               <Navigate to="/" />
+                           )}
+                       />
+                       
+
+                        
                     </Routes>
                 </main>
                 <Footer />
