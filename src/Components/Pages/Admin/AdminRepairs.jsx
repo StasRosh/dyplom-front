@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './Repairs.css';
 
 const Repairs = () => {
     const [repairs, setRepairs] = useState([]);
@@ -15,9 +16,9 @@ const Repairs = () => {
     };
 
     return (
-        <div>
+        <div className="repairs-container">
             <h1>Naprawy Kamperów</h1>
-            <div>
+            <div className="repairs-form-container">
                 <input
                     type="text"
                     name="camper"
@@ -40,7 +41,7 @@ const Repairs = () => {
                 />
                 <button onClick={addRepair}>Dodaj Naprawę</button>
             </div>
-            <table>
+            <table className="repair-table">
                 <thead>
                     <tr>
                         <th>Kamper</th>

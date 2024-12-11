@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
+import './Reports.css';
 
 const Reports = () => {
-    const [reports, setReports] = useState([
+    const [reports] = useState([
         { id: 1, user: 'John Doe', camper: 'Camper 1', issueDate: '2023-11-01', returnDate: '2023-11-10', conditionOut: 'Good', conditionIn: 'Good' },
         { id: 2, user: 'Jane Smith', camper: 'Camper 2', issueDate: '2023-11-05', returnDate: '2023-11-12', conditionOut: 'Fair', conditionIn: 'Excellent' },
     ]);
 
     return (
-        <div>
+        <div className="reports-container">
             <h1>Raporty Wydania i Zwrotu</h1>
-            <table>
+            <table className="reports-table">
                 <thead>
                     <tr>
                         <th>Użytkownik</th>
