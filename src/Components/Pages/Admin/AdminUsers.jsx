@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Table, Button } from 'react-bootstrap';
 import { AuthContext } from '../../../Context/AuthContext';
+import './AdminUsers.css';
 
 const AdminUsers = () => {
     const { getAllUsers, deleteUser, toggleBlockUser } = useContext(AuthContext);
@@ -28,9 +29,9 @@ const AdminUsers = () => {
     };
 
     return (
-        <div>
+        <div className="admin-users-container">
             <h1>Użytkownicy</h1>
-            <Table striped bordered>
+            <Table striped bordered responsive className="users-table">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -51,12 +52,14 @@ const AdminUsers = () => {
                                 <Button 
                                     variant="danger" 
                                     onClick={() => handleDelete(user.id)}
+                                    className="action-button"
                                 >
                                     Usuń
                                 </Button>{' '}
                                 <Button 
                                     variant={user.isBlocked ? "secondary" : "outline-secondary"} 
                                     onClick={() => handleBlockToggle(user.id, user.isBlocked)}
+                                    className="action-button"
                                 >
                                     {user.isBlocked ? 'Odblokuj' : 'Zablokuj'}
                                 </Button>

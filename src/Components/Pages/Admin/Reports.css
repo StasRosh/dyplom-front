@@ -1,99 +1,49 @@
-/* Główne style dla kontenera */
 .reports-container {
-    font-family: 'Arial', sans-serif;
-    padding: 20px;
+    font-family: Arial, sans-serif;
+    padding: 60px;
     max-width: 1200px;
     margin: 0 auto;
 }
 
-h1 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 30px;
-}
-
-/* Style dla tabeli */
-.reports-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.reports-table th,
-.reports-table td {
-    padding: 12px;
-    border: 1px solid #ddd;
-    text-align: left;
-}
-
-.reports-table th {
-    background-color: #007BFF;
+.save-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    background-color: #3498db;
     color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-.reports-table tr:nth-child(even) {
-    background-color: #f9f9f9;
+.save-button:hover {
+    background-color: #2980b9;
 }
 
-.reports-table tr:hover {
-    background-color: #f1f1f1;
+.list-group-item {
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
 }
 
-.reports-table td {
-    font-size: 0.9rem;
+textarea, input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 14px;
 }
 
-/* Dostosowanie kolorów stanu */
-.reports-table .good {
-    color: green;
-}
-
-.reports-table .fair {
-    color: orange;
-}
-
-.reports-table .excellent {
-    color: darkgreen;
-}
-
-/* Responsywność */
 @media (max-width: 768px) {
     .reports-container {
-        padding: 15px;
-    }
-
-    h1 {
-        font-size: 1.5rem;
-    }
-
-    .reports-table th,
-    .reports-table td {
-        font-size: 0.9rem;
         padding: 10px;
     }
 
-    .reports-table {
-        font-size: 0.9rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .reports-container {
-        padding: 10px;
-    }
-
-    .reports-table th,
-    .reports-table td {
-        font-size: 0.8rem;
-        padding: 8px;
-    }
-
-    h1 {
-        font-size: 1.2rem;
-    }
-
-    .reports-table {
-        font-size: 0.8rem;
+    .save-button {
+        font-size: 14px;
+        padding: 8px 16px;
     }
 }

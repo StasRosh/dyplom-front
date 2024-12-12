@@ -17,7 +17,7 @@ const Repairs = () => {
 
     return (
         <div className="repairs-container">
-            <h1>Naprawy Kamperów</h1>
+            <h2 className="title">Zarządzanie Naprawami Kamperów</h2>
             <div className="repairs-form-container">
                 <input
                     type="text"

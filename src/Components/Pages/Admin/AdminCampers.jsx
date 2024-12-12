@@ -97,7 +97,7 @@ const AdminCampers = ({ campersData = [], setCampersData }) => {
 
     return (
         <div className="admin-camper-container">
-            <h2>Admin Panel: Zarządzanie Kamperami</h2>
+            <h2>Zarządzanie Kamperami</h2>
 
             <div className="admin-form">
                 <h3>Dodaj nowego kampera</h3>

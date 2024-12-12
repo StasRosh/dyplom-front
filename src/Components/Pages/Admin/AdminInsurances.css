@@ -1,7 +1,7 @@
 .admin-insurances-container {
     max-width: 800px;
     margin: 20px auto;
-    padding: 20px;
+    padding: 80px;
     font-family: 'Arial', sans-serif;
     background-color: #f9f9f9;
     border-radius: 8px;
@@ -55,20 +55,6 @@
     outline: none;
 }
 
-.calendar-container {
-    text-align: center;
-}
-
-.calendar-container h4 {
-    margin-bottom: 10px;
-    font-size: 16px;
-    color: #555;
-}
-
-.calendar-container .react-calendar {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-}
 
 .selected-dates {
     margin-top: 15px;
@@ -134,7 +120,7 @@
 
 @media (max-width: 768px) {
     .admin-insurances-container {
-        padding: 15px;
+        padding: 30px;
     }
 
     .form-container {

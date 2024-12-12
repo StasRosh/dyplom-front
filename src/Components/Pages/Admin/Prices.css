@@ -1,7 +1,7 @@
 .prices-container {
     max-width: 800px;
     margin: 20px auto;
-    padding: 20px;
+    padding: 60px;
     border: 1px solid #ccc;
     border-radius: 8px;
     background-color: #ffffff;
@@ -19,14 +19,14 @@
 .prices-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    margin-top: 50px;
 }
 
 .prices-table th,
 .prices-table td {
     border: 1px solid #ddd;
     text-align: center;
-    padding: 10px;
+    padding: 1s0px;
     font-size: 14px;
     color: #555;
 }
@@ -119,7 +119,7 @@
 /* Media Queries */
 @media (max-width: 768px) {
     .prices-container {
-        padding: 15px;
+        padding: 50px;
     }
 
     .prices-table th,

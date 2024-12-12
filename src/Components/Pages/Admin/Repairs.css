@@ -1,7 +1,7 @@
 /* Główne style dla kontenera */
 .repairs-container {
     font-family: 'Arial', sans-serif;
-    padding: 20px;
+    padding: 90px;
     max-width: 1200px;
     margin: 0 auto;
 }
@@ -12,7 +12,7 @@
     flex-direction: column;
     max-width: 400px;
     margin: 20px auto;
-    padding: 20px;
+    padding: 60px;
     background-color: #f4f4f4;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -31,20 +31,6 @@ input[type="date"] {
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 1rem;
-}
-
-button {
-    background-color: #767575;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #575757;
 }
 
 /* Style dla tabeli */
@@ -90,10 +76,6 @@ button:hover {
     .repair-table {
         font-size: 0.9rem;
     }
-
-    h1 {
-        font-size: 1.5rem;
-    }
 }
 
 @media (max-width: 480px) {
@@ -117,7 +99,5 @@ button:hover {
         padding: 8px;
     }
 
-    h1 {
-        font-size: 1.3rem;
-    }
+   
 }
