@@ -21,12 +21,16 @@ import Camper4 from './Components/Pages/Campers/Camper4';
 import AdminUsers from './Components/Pages/Admin/AdminUsers';
 import AdminCampers from './Components/Pages/Admin/AdminCampers';
 import AdminReservations from './Components/Pages/Admin/AdminReservations';
+import AdminRepairs from './Components/Pages/Admin/AdminRepairs';
+import AdminReports from './Components/Pages/Admin/AdminReports';
+import AdminPrices from './Components/Pages/Admin/AdminPrices';
+import AdminInsurances from './Components/Pages/Admin/AdminInsurances';
 import { AuthContext } from './Context/AuthContext';
-import { AuthContext } from './Context/AuthContext'; // Importujemy AuthContext
 import Cookies from 'js-cookie'
 const App = () => {
     const {  addReservation, removeReservation, logout } = useContext(AuthContext);
 
+    const [currentUser, setCurrentUser] = useState(null);
     const [campersData, setCampersData] = useState([]);
 
     // Wczytanie danych kamperów z localStorage
@@ -65,11 +69,11 @@ const App = () => {
                         {/* Trasy administracyjne */}
                         <Route 
                             path="/admin" 
-                            element={currentUser?.role === 'admin' ? <AdminPage /> : <Navigate to="/" />}
+                            element={currentUser?.role === '1' ? <AdminPage /> : <Navigate to="/" />}
                         />
                         <Route 
                             path="/admin/users" 
-                            element={currentUser?.role === 'admin' ? <AdminUsers /> : <Navigate to="/" />}
+                            element={currentUser?.role === '1' ? <AdminUsers /> : <Navigate to="/" />}
                         />
                         <Route 
                             path="/admin/campers" 

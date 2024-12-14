@@ -75,7 +75,7 @@ const Camper = ({ setReservations }) => {
                 guests: searchParams.guests,
                 image: camper.image,
                 userId: currentUser.id,
-                price: getPrice(camper) // Dodaj dynamiczną cenę do rezerwacji
+                // price: getPrice(camper) // Dodaj dynamiczną cenę do rezerwacji
             };
             setReservations((prevReservations) => [...prevReservations, reservation]);
             navigate('/reservations');

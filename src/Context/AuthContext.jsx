@@ -321,6 +321,10 @@ export const AuthProvider = ({ children }) => {
         })
     }
 
+    const setInsurances = () =>{
+        console.log("set insurances")
+    }
+
 
 
 
