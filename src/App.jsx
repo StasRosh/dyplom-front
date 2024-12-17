@@ -37,6 +37,10 @@ const App = () => {
     useEffect(() => {
         const savedCampers = JSON.parse(localStorage.getItem('campers')) || [];
         setCampersData(savedCampers);
+        if(Cookies.get("admin") == '1'){
+            setCurrentUser({role: 'admin'})
+        }
+        
     }, []);
 
     return (
@@ -69,11 +73,11 @@ const App = () => {
                         {/* Trasy administracyjne */}
                         <Route 
                             path="/admin" 
-                            element={currentUser?.role === '1' ? <AdminPage /> : <Navigate to="/" />}
+                            element={currentUser?.role === 'admin' ? <AdminPage /> : <Navigate to="/" />}
                         />
                         <Route 
                             path="/admin/users" 
-                            element={currentUser?.role === '1' ? <AdminUsers /> : <Navigate to="/" />}
+                            element={currentUser?.role === 'admin' ? <AdminUsers /> : <Navigate to="/" />}
                         />
                         <Route 
                             path="/admin/campers" 

@@ -42,6 +42,10 @@ export const AuthProvider = ({ children }) => {
             
         }
 
+        if(Cookies.get("admin") == '1'){
+            setCurrentUser({role: 'admin'})
+        }
+
         const storedInsurances = JSON.parse(localStorage.getItem('insurances')) || [];
         setInsurances(storedInsurances);
     }, []);
@@ -240,6 +244,30 @@ export const AuthProvider = ({ children }) => {
         })
     }
 
+    const getAllInsurances = async () =>{
+        console.log("get insurance")
+        return axios.get("http://localhost:8080/inspection/all",config)
+        .then((res)=>{
+            console.log(res)
+            return res.data
+        })
+        .catch((err)=>{
+            return err
+        })
+    }
+
+    const addInsurance = async (insuranceData) =>{
+        console.log("add insurance")
+        axios.post('http://localhost:8080/inspection/create',insuranceData,config)
+        .then((res)=>{
+            console.log(res)
+            return res.data
+        })
+        .catch((err)=>{
+            return err
+        })
+    }
+
     const deleteUser = (userId) =>{
         console.log("delete user")
 
@@ -278,8 +306,33 @@ export const AuthProvider = ({ children }) => {
         .catch((err)=>{
             return err
         })
+    }
 
+    const getAllPrices = async ()=>{
+        console.log("all prices")
 
+        return axios.get(`http://localhost:8080/prices/all`,config)
+        .then((res)=>{
+            console.log(res)
+            return res.data
+        })
+        .catch((err)=>{
+            return err
+        })
+    }
+
+    const addPrice = async (priceData) => {
+        console.log("add prices")
+
+        return axios.post(`http://localhost:8080/prices/add`,priceData,config)
+        .then((res)=>{
+            console.log(res)
+            return res.data
+        })
+        .catch((err)=>{
+            return err
+        })
+        
     }
     const getReservations = () => {
         console.log("get reservations")
@@ -345,6 +398,8 @@ export const AuthProvider = ({ children }) => {
             deleteUser,
             removeReservation,
             cancelReservation,
+            getAllInsurances,
+            addInsurance,
             getCamperById,
             getAllCampers,
             addCamper,
@@ -354,6 +409,8 @@ export const AuthProvider = ({ children }) => {
             addReservation,
             removeReservation,
             getReservations,
+            getAllPrices,
+            addPrice,
             login,
             logout,
             register

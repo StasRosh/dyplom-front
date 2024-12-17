@@ -6,13 +6,15 @@ import './AdminReservations.css';
 const AdminReservations = () => {
     const { getReservationsByUserId, users, currentUser, acceptReservation, cancelReservation, removeReservation } = useContext(AuthContext);
     const [reservations, setReservations] = useState([]);
+    const [reload, setReload] = useState(true);
 
+    async function getReservations(userid) {
+        const fetchedReservations = await getReservationsByUserId(); // Wszystkie rezerwacje dla administratora
+        setReservations(fetchedReservations);
+    }
     useEffect(() => {
         // if (currentUser && currentUser.role === 'admin') {
-        async function getReservations(userid) {
-            const fetchedReservations = await getReservationsByUserId(); // Wszystkie rezerwacje dla administratora
-            setReservations(fetchedReservations);
-        }
+        
         getReservations();
         console.log("reservation")
         console.log(reservations)
@@ -20,17 +22,18 @@ const AdminReservations = () => {
         //     const fetchedReservations = getReservationsByUserId(currentUser.id); // Rezerwacje tylko dla zalogowanego użytkownika
         //     setReservations(fetchedReservations);
         // }
-    }, [currentUser, getReservationsByUserId]
+    }, [currentUser, getReservationsByUserId, reload]
     );
 
-    const handleAccept = (reservationId) => {
-        acceptReservation(reservationId);
-        window.location.reload()
+    const handleAccept = async (reservationId) => {
+        await acceptReservation(reservationId);
+        setReload(!reload); 
     };
 
-    const handleCancel = (reservationId) => {
-        cancelReservation(reservationId);
-        window.location.reload()
+    const handleCancel = async (reservationId) => {
+        await cancelReservation(reservationId);
+        setReload(!reload);
+        
     };
 
     const handleRemove = (reservationId) => {
@@ -61,23 +64,23 @@ const AdminReservations = () => {
                                     <p><strong>Użytkownik:</strong> {user ? user.email : 'Nieznany'}</p>
                                     <p>
                                         <strong>Kamper:</strong>{' '}
-                                        {camper ? `${camper.name} (${camper.category})` : 'Nieznany'}
+                                        {reservation.vehicle ? `${reservation.vehicle.name} (${reservation.vehicle.vehicleType.name})` : 'Nieznany'}
                                     </p>
                                     <p>
                                         <strong>Okres:</strong>{' '}
-                                        {reservation.startDate && reservation.endDate
-                                            ? `${reservation.startDate} - ${reservation.endDate}`
+                                        {reservation.start && reservation.end
+                                            ? `${reservation.start} - ${reservation.end}`
                                             : 'Brak dat'}
                                     </p>
-                                    <p><strong>Status:</strong> {reservation.status || 'Oczekująca'}</p>
+                                    <p><strong>Status:</strong> {reservation.order.orderStatus || 'Nieznany'}</p>
                                 </div>
                                 <div className="admin-reservation-actions">
-                                    {currentUser && currentUser.role === 'admin' && reservation.status !== 'Zaakceptowana' && (
+                                    { reservation.order.orderStatus !== 'PAID' && (
                                         <Button className="btn-success" onClick={() => handleAccept(reservation.id)}>
                                             Zaakceptuj
                                         </Button>
                                     )}
-                                    {currentUser && currentUser.role === 'admin' && reservation.status !== 'Anulowana' && (
+                                    { reservation.order.orderStatus !== 'CANCELED' && (
                                         <Button className="btn-danger" onClick={() => handleCancel(reservation.id)}>
                                             Anuluj
                                         </Button>

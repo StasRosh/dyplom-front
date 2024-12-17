@@ -9,11 +9,14 @@ const AdminReports = () => {
     const [reservations, setReservations] = useState([]);
     const [pickUpReports, setPickUpReports] = useState([]);
     const [returnReports, setReturnReports] = useState([]);
+    const [fetchedReservations, setFetchedReservations] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (currentUser) {
-            const fetchedReservations = getReservationsByUserId();
+            async function getReservations() {
+                setFetchedReservations( await getReservationsByUserId());
+            }
+            getReservations();
 
             // Odczytujemy zapisany stan z localStorage
             const storedReservationStates = JSON.parse(localStorage.getItem('reservationStates')) || {};
@@ -21,21 +24,21 @@ const AdminReports = () => {
             setReservations(
                 fetchedReservations.map(reservation => ({
                     ...reservation,
-                    pickUpDate: reservation.pickUpDate || '',
+                    pickUpDate: reservation.start || '',
                     pickUpCamperCondition: reservation.pickUpCamperCondition || '',
-                    returnDate: reservation.returnDate || '',
+                    returnDate: reservation.end || '',
                     returnCamperCondition: reservation.returnCamperCondition || '',
                     isPickUpSaved: storedReservationStates[reservation.id]?.isPickUpSaved || false,
                     isReturnSaved: storedReservationStates[reservation.id]?.isReturnSaved || false,
                 }))
             );
-        }
+        
 
         const storedPickUpReports = JSON.parse(localStorage.getItem('pickUpReports')) || [];
         const storedReturnReports = JSON.parse(localStorage.getItem('returnReports')) || [];
         setPickUpReports(storedPickUpReports);
         setReturnReports(storedReturnReports);
-    }, [currentUser, getReservationsByUserId]);
+    }, []);
 
     const updateReservationState = (reservationId, updates) => {
         // Aktualizujemy lokalny stan komponentu

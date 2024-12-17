@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
+import { AuthContext } from '../../../Context/AuthContext';
 import './Prices.css';
 
 const AdminPrices = () => {
+    const { getAllPrices,addPrice } = useContext(AuthContext);
     const [prices, setPrices] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState('');
     const [newPrice, setNewPrice] = useState({
@@ -9,41 +11,24 @@ const AdminPrices = () => {
         startDate: '',
         endDate: '',
     });
+    const [refresh,setRefresh] = useState(false)
+
+    const Categories = ["","alkowa","integra","kampervan","polintegra"]
+
+
 
     // Załadowanie kamperów z localStorage lub utworzenie przykładowych danych
     useEffect(() => {
-        const storedPrices = JSON.parse(localStorage.getItem('campers'));
-        if (storedPrices && storedPrices.length > 0) {
-            setPrices(storedPrices);
-        } else {
-            console.log('Brak kamperów w localStorage. Tworzenie przykładowych danych...');
-            const exampleCampers = [
-                {
-                    id: 1,
-                    name: 'Kamper Alkowa',
-                    category: 'alkowa',
-                    weekdayPrice: 200,
-                    weekendPrice: 250,
-                    priceChanges: [],
-                },
-                {
-                    id: 2,
-                    name: 'Kamper Integra',
-                    category: 'integra',
-                    weekdayPrice: 300,
-                    weekendPrice: 350,
-                    priceChanges: [],
-                },
-            ];
-            localStorage.setItem('campers', JSON.stringify(exampleCampers));
-            setPrices(exampleCampers);
+        async function getPrices() {
+            setPrices(await getAllPrices())
         }
-    }, []);
+        getPrices();
+    }, [refresh]);
 
     // Wybór kategorii kampera
     const handleSelectCategory = (category) => {
         setSelectedCategory(category);
-        const selectedCamper = prices.find((camper) => camper.category === category);
+        const selectedCamper = prices.find((camper) => camper.vehicleType.name === category);
         if (selectedCamper) {
             setNewPrice({
                 weekendPrice: selectedCamper.weekendPrice,
@@ -69,35 +54,22 @@ const AdminPrices = () => {
 
     // Zapisanie nowych cen
     const handleSavePrices = () => {
-        if (!newPrice.startDate || !newPrice.endDate) {
-            alert('Proszę wypełnić zakres dat!');
-            return;
-        }
+        const priceData = {
+            price: newPrice.weekendPrice,
+            start: newPrice.startDate,
+            end: newPrice.endDate,
+            vehicleTypeId: Categories.indexOf(selectedCategory)
+          }
 
-        const updatedPrices = prices.map((camper) =>
-            camper.category === selectedCategory
-                ? {
-                      ...camper,
-                      priceChanges: [
-                          ...(Array.isArray(camper.priceChanges) ? camper.priceChanges : []),
-                          {
-                              weekendPrice: newPrice.weekendPrice,
-                              startDate: newPrice.startDate,
-                              endDate: newPrice.endDate,
-                          },
-                      ],
-                  }
-                : camper
-        );
-
-        setPrices(updatedPrices);
-        localStorage.setItem('campers', JSON.stringify(updatedPrices));
+        addPrice(priceData);
+           
         alert('Ceny zapisane!');
+        setRefresh(!refresh)
     };
 
     // Filtrowanie listy kamperów
     const filteredPrices = selectedCategory
-        ? prices.filter((camper) => camper.category === selectedCategory)
+        ? prices.filter((camper) => camper.vehicleType.name === selectedCategory)
         : prices;
 
     return (
@@ -124,12 +96,12 @@ const AdminPrices = () => {
                 <div className="price-edit">
                     <h3>Edytuj ceny dla kategorii: {selectedCategory}</h3>
                     <div>
-                        <label>Cena (weekend):</label>
+                        <label>Cena:</label>
                         <input
                             type="number"
                             value={newPrice.weekendPrice}
                             onChange={(e) => handleInputChange('weekendPrice', e.target.value)}
-                            placeholder="Cena (weekend)"
+                            placeholder="Cena"
                             min="1"
                         />
                     </div>
@@ -155,31 +127,24 @@ const AdminPrices = () => {
 
             {/* Lista kamperów */}
             <div className="camper-list">
-                <h3>Lista kamperów</h3>
+                <h3>Lista cen:</h3>
                 {filteredPrices.length > 0 ? (
-                    filteredPrices.map((camper) => (
+                    filteredPrices.map((camper,index) => (
                         <div key={camper.id} className="camper-card">
                             <h3>{camper.name}</h3>
-                            <p>Kategoria: {camper.category}</p>
+                            <p>Kategoria: {camper.vehicleType.name}</p>
                             {/* Sprawdzamy, czy priceChanges jest tablicą i filtrujemy modyfikacje dla konkretnej daty */}
-                            {Array.isArray(camper.priceChanges) && camper.priceChanges.length > 0 ? (
-                                camper.priceChanges.map((change, index) => (
                                     <div key={index}>
                                         <p>
-                                            Ceny od {change.startDate} do {change.endDate}:
+                                            Ceny od {camper.start} do {camper.end}:
                                         </p>
-                                        <p>- Weekend: {change.weekendPrice} zł</p>
+                                        <p>cena: {camper.price} zł</p>
                                     </div>
-                                ))
-                            ) : (
-                                <>
-                                    <p>Cena (weekend): {camper.weekendPrice} zł</p>
-                                </>
-                            )}
+                                
                         </div>
                     ))
                 ) : (
-                    <p>Brak kamperów dla wybranej kategorii.</p>
+                    <p>Brak cen dla wybranej kategorii.</p>
                 )}
             </div>
         </div>
