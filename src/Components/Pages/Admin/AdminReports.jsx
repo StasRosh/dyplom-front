@@ -1,26 +1,38 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Form, Button, Container, ListGroup, Row, Col } from 'react-bootstrap';
+import { Form, Button, Container, ListGroup, Row, Col, Accordion, Table } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../Context/AuthContext';
 import './Reports.css';
 
 const AdminReports = () => {
-    const { getReservationsByUserId, currentUser } = useContext(AuthContext);
+    const { getReservationsByUserId, currentUser, createPickupReport, createReturnReport, getAllReports } = useContext(AuthContext);
     const [reservations, setReservations] = useState([]);
     const [pickUpReports, setPickUpReports] = useState([]);
     const [returnReports, setReturnReports] = useState([]);
     const [fetchedReservations, setFetchedReservations] = useState([]);
+    const [reports,setReports] = useState([]);
     const navigate = useNavigate();
 
+    async function getReservations(userid) {
+        const fetchedReservations = await getReservationsByUserId(); // Wszystkie rezerwacje dla administratora
+        setReservations(fetchedReservations);
+    }
+    async function getReports() {
+        const fetchedReports = await getAllReports();
+         
+        setPickUpReports(fetchedReports.filter((x)=>
+            x.reportType === 'PICKUP'
+        ))
+        setReturnReports(fetchedReports.filter((x)=>
+            x.reportType === 'RETURN'
+        ))
+        
+    }
+
     useEffect(() => {
-            async function getReservations() {
-                setFetchedReservations( await getReservationsByUserId());
-            }
             getReservations();
 
             // Odczytujemy zapisany stan z localStorage
-            const storedReservationStates = JSON.parse(localStorage.getItem('reservationStates')) || {};
-
             setReservations(
                 fetchedReservations.map(reservation => ({
                     ...reservation,
@@ -28,10 +40,12 @@ const AdminReports = () => {
                     pickUpCamperCondition: reservation.pickUpCamperCondition || '',
                     returnDate: reservation.end || '',
                     returnCamperCondition: reservation.returnCamperCondition || '',
-                    isPickUpSaved: storedReservationStates[reservation.id]?.isPickUpSaved || false,
-                    isReturnSaved: storedReservationStates[reservation.id]?.isReturnSaved || false,
+                    // isPickUpSaved: storedReservationStates[reservation.id]?.isPickUpSaved || false,
+                    // isReturnSaved: storedReservationStates[reservation.id]?.isReturnSaved || false,
                 }))
             );
+
+            getReports();
         
 
         const storedPickUpReports = JSON.parse(localStorage.getItem('pickUpReports')) || [];
@@ -76,38 +90,44 @@ const AdminReports = () => {
 
     const handleSavePickUpReport = (reservation) => {
         const newReport = {
-            reservationId: reservation.id,
-            pickUpDate: reservation.pickUpDate,
-            pickUpCamperCondition: reservation.pickUpCamperCondition,
+            reservationid: reservation.id,
+            reportDate: reservation.pickUpDate,
+            comment: reservation.pickUpCamperCondition,
+            technicalCondition: reservation.pickUpTechnicalCondition,
+            visualCondition: reservation.pickUpVisualCondition,
+            interiorCondition: reservation.pickUpInteriorCondition
         };
 
-        const updatedPickUpReports = [...pickUpReports, newReport];
-        setPickUpReports(updatedPickUpReports);
-        localStorage.setItem('pickUpReports', JSON.stringify(updatedPickUpReports));
+        console.log(newReport);
 
-        updateReservationState(reservation.id, { isPickUpSaved: true });
+        if(!reservation.id || !reservation.pickUpDate || !reservation.pickUpCamperCondition || !reservation.pickUpInteriorCondition || !reservation.pickUpTechnicalCondition || !reservation.pickUpVisualCondition){
+            alert("wypełnij wszystkie dane!")
+            return;
+        }
+
+        createPickupReport(newReport)
 
         alert('Raport odbioru zapisany!');
     };
 
     const handleSaveReturnReport = (reservation) => {
         const newReport = {
-            reservationId: reservation.id,
-            returnDate: reservation.returnDate,
-            returnCamperCondition: reservation.returnCamperCondition,
+            reservationid: reservation.id,
+            reportDate: reservation.returnDate,
+            comment: reservation.returnCamperCondition,
+            technicalCondition: reservation.returnTechnicalCondition,
+            visualCondition: reservation.returnVisualCondition,
+            interiorCondition: reservation.returnInteriorCondition
         };
 
-        const updatedReturnReports = [...returnReports, newReport];
-        setReturnReports(updatedReturnReports);
-        localStorage.setItem('returnReports', JSON.stringify(updatedReturnReports));
-
-        // Usuwamy rezerwację, ale zapisujemy jej stan w localStorage
-        const remainingReservations = reservations.filter(r => r.id !== reservation.id);
-        setReservations(remainingReservations);
-
-        const currentStates = JSON.parse(localStorage.getItem('reservationStates')) || {};
-        delete currentStates[reservation.id];
-        localStorage.setItem('reservationStates', JSON.stringify(currentStates));
+        console.log(newReport)
+        
+        if(!reservation.id || !reservation.returnDate || !reservation.returnCamperCondition || !reservation.returnInteriorCondition || !reservation.returnTechnicalCondition || !reservation.returnVisualCondition){
+            alert("wypełnij wszystkie dane!")
+            return;
+        }
+        
+        createReturnReport(newReport)
 
         alert('Raport zwrotu zapisany!');
     };
@@ -125,7 +145,7 @@ const AdminReports = () => {
                         <ListGroup.Item className="text-center">Brak zaakceptowanych rezerwacji</ListGroup.Item>
                     ) : (
                         reservations.map(reservation => {
-                            if (reservation.status !== 'Zaakceptowana') {
+                            if (reservation.order.orderStatus === 'FINISHED') {
                                 return null;
                             }
 
@@ -137,21 +157,70 @@ const AdminReports = () => {
                                     <Row>
                                         <Col xs={12} md={8} className="reservation-details">
                                             <p><strong>ID:</strong> {reservation.id}</p>
-                                            <p><strong>Kamper:</strong> {reservation.camper || 'Nieznany kamper'}</p>
-                                            <p><strong>Data Odbioru:</strong> {reservation.startDate || 'Brak daty'}</p>
+                                            <p><strong>Kamper:</strong> {reservation.vehicle.name || 'Nieznany kamper'}</p>
+                                            <p><strong>Status: </strong>{reservation.order.orderStatus}</p>
+                                            <p><strong>Data Odbioru:</strong> {reservation.start || 'Brak daty'}</p>
+                                            <p><strong>Data Zwrotu:</strong> {reservation.end || 'Brak daty'}</p>
 
-                                            {!reservation.isPickUpSaved && (
-                                                <>
+                                            <Accordion>
+{reservation.order.orderStatus !== 'IN_USE' ? (
+    <Accordion.Item eventKey={reservation.id+"pickup"}>
+        <Accordion.Header>Raport wydania</Accordion.Header>
+        <Accordion.Body>
                                                     <Form.Group controlId={`pickUpDate-${reservation.id}`} className="mb-3">
-                                                        <Form.Label>Data Oddania</Form.Label>
+                                                        <Form.Label>Data wydania</Form.Label>
                                                         <Form.Control
                                                             type="date"
                                                             value={reservation.pickUpDate}
                                                             onChange={(e) => handleChange(reservation.id, 'pickUpDate', e.target.value)}
                                                         />
                                                     </Form.Group>
+
+                                                    <Form.Group controlId={`pickUpVisualCondition-${reservation.id}`} className="mb-3">
+        <Form.Label>Stan Wizualny</Form.Label>
+        <Form.Select
+            value={reservation.pickUpVisualCondition || 'wybierz status'}
+            onChange={(e) => handleChange(reservation.id, 'pickUpVisualCondition', e.target.value)}
+        >
+            <option value=""></option>
+            <option value="GOOD">GOOD</option>
+            <option value="FAIR">FAIR</option>
+            <option value="POOR">POOR</option>
+            <option value="UNUSABLE">UNUSABLE</option>
+        </Form.Select>
+    </Form.Group>
+
+    <Form.Group controlId={`pickUpTechnicalCondition-${reservation.id}`} className="mb-3">
+        <Form.Label>Stan Techniczny</Form.Label>
+        <Form.Select
+            value={reservation.pickUpTechnicalCondition || 'wybierz status'}
+            onChange={(e) => handleChange(reservation.id, 'pickUpTechnicalCondition', e.target.value)}
+        >
+            <option value=""></option>
+            <option value="GOOD">GOOD</option>
+            <option value="FAIR">FAIR</option>
+            <option value="POOR">POOR</option>
+            <option value="UNUSABLE">UNUSABLE</option>
+        </Form.Select>
+    </Form.Group>
+
+    <Form.Group controlId={`pickUpInteriorCondition-${reservation.id}`} className="mb-3">
+        <Form.Label>Stan Wewnętrzny</Form.Label>
+        <Form.Select
+            value={reservation.pickUpInteriorCondition || 'wybierz status'}
+            onChange={(e) => handleChange(reservation.id, 'pickUpInteriorCondition', e.target.value)}
+        >
+            <option value=""></option>
+            <option value="GOOD">GOOD</option>
+            <option value="FAIR">FAIR</option>
+            <option value="POOR">POOR</option>
+            <option value="UNUSABLE">UNUSABLE</option>
+        </Form.Select>
+    </Form.Group>
+
+                                                  
                                                     <Form.Group controlId={`pickUpCamperCondition-${reservation.id}`} className="mb-3">
-                                                        <Form.Label>Stan przy Oddaniu</Form.Label>
+                                                        <Form.Label>Stan przy wydaniu pojazdu</Form.Label>  
                                                         <Form.Control
                                                             as="textarea"
                                                             rows={2}
@@ -164,13 +233,17 @@ const AdminReports = () => {
                                                         onClick={() => handleSavePickUpReport(reservation)}
                                                         className="save-button mb-3"
                                                     >
-                                                        Zapisz Odbiór
-                                                    </Button>
-                                                </>
-                                            )}
+                                                        Zapisz raport wydania
+                                                    </Button> 
+                                                    </Accordion.Body>
+    </Accordion.Item>
 
-                                            {!reservation.isReturnSaved && (
-                                                <>
+) : (
+                                                                                           
+
+                                                <Accordion.Item eventKey={reservation.id+"return"}>
+        <Accordion.Header>Raport zwrotu</Accordion.Header>
+        <Accordion.Body>
                                                     <Form.Group controlId={`returnDate-${reservation.id}`} className="mb-3">
                                                         <Form.Label>Data Zwrotu</Form.Label>
                                                         <Form.Control
@@ -179,6 +252,48 @@ const AdminReports = () => {
                                                             onChange={(e) => handleChange(reservation.id, 'returnDate', e.target.value)}
                                                         />
                                                     </Form.Group>
+                                                    <Form.Group controlId={`returnVisualCondition-${reservation.id}`} className="mb-3">
+        <Form.Label>Stan Wizualny</Form.Label>
+        <Form.Select
+            value={reservation.returnVisualCondition || 'wybierz status'}
+            onChange={(e) => handleChange(reservation.id, 'returnVisualCondition', e.target.value)}
+        >
+            <option value=""></option>
+            <option value="GOOD">GOOD</option>
+            <option value="FAIR">FAIR</option>
+            <option value="POOR">POOR</option>
+            <option value="UNUSABLE">UNUSABLE</option>
+        </Form.Select>
+    </Form.Group>
+
+    <Form.Group controlId={`returnTechnicalCondition-${reservation.id}`} className="mb-3">
+        <Form.Label>Stan Techniczny</Form.Label>
+        <Form.Select
+            value={reservation.returnTechnicalCondition || 'wybierz status'}
+            onChange={(e) => handleChange(reservation.id, 'returnTechnicalCondition', e.target.value)}
+        >            
+            <option value=""></option>
+            <option value="GOOD">GOOD</option>
+            <option value="FAIR">FAIR</option>
+            <option value="POOR">POOR</option>
+            <option value="UNUSABLE">UNUSABLE</option>
+        </Form.Select>
+    </Form.Group>
+
+    <Form.Group controlId={`returnInteriorCondition-${reservation.id}`} className="mb-3">
+        <Form.Label>Stan Wewnętrzny</Form.Label>
+        <Form.Select
+            value={reservation.returnInteriorCondition || 'wybierz status'}
+            onChange={(e) => handleChange(reservation.id, 'returnInteriorCondition', e.target.value)}
+        >
+            <option value=""></option>
+            <option value="GOOD">GOOD</option>
+            <option value="FAIR">FAIR</option>
+            <option value="POOR">POOR</option>
+            <option value="UNUSABLE">UNUSABLE</option>
+        </Form.Select>
+    </Form.Group>
+                                                    
                                                     <Form.Group controlId={`returnCamperCondition-${reservation.id}`} className="mb-3">
                                                         <Form.Label>Stan przy Zwrocie</Form.Label>
                                                         <Form.Control
@@ -202,24 +317,48 @@ const AdminReports = () => {
                                                     >
                                                         Dodaj Naprawę
                                                     </Button>
-                                                </>
-                                            )}
+                                                    </Accordion.Body>
+    </Accordion.Item>
+    )}
+                                            
+                                            </Accordion>
                                         </Col>
                                     </Row>
                                 </ListGroup.Item>
                             );
                         })
                     )}
+                    
                 </ListGroup>
             </div>
             <div className="reports-lists">
                 <h2 className="text-primary mt-5">Raporty Odbioru</h2>
                 <ListGroup>
                     {pickUpReports.map(report => (
-                        <ListGroup.Item key={report.reservationId}>
-                            <p><strong>ID:</strong> {report.reservationId}</p>
-                            <p><strong>Data Oddania:</strong> {report.pickUpDate}</p>
+                        <ListGroup.Item key={report.reservation.id}>
+                            <p><strong>ID:</strong> {report.reservation.id}</p>
+                            <p><strong>Kamper:</strong> {report.reservation.vehicle.name}</p>
+                            <p><strong>Data Oddania:</strong> {report.reportDate}</p>
+                            <p><strong>Lokalizacja:</strong> {report.reservation.location}</p>
                             <p><strong>Stan przy Oddaniu:</strong> {report.pickUpCamperCondition}</p>
+                            <Table hover>
+                                <tbody>
+                                    <tr>
+                                        <td>Stan techniczny</td>
+                                        <td>{report.technicalCondition}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Stan wnętrza</td>
+                                        <td>{report.interiorCondition}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Stan wizulany</td>
+                                        <td>{report.visualCondition}</td>
+                                    </tr>
+                                </tbody>
+                            </Table>
+                            <p><strong>Opis:</strong> {report.comment}</p>
+
                         </ListGroup.Item>
                     ))}
                 </ListGroup>
@@ -227,10 +366,30 @@ const AdminReports = () => {
                 <h2 className="text-primary mt-5">Raporty Zwrotu</h2>
                 <ListGroup>
                     {returnReports.map(report => (
-                        <ListGroup.Item key={report.reservationId}>
-                            <p><strong>ID:</strong> {report.reservationId}</p>
-                            <p><strong>Data Zwrotu:</strong> {report.returnDate}</p>
-                            <p><strong>Stan przy Zwrocie:</strong> {report.returnCamperCondition}</p>
+                        <ListGroup.Item key={report.reservation.id}>
+                            <p><strong>ID:</strong> {report.reservation.id}</p>
+                            <p><strong>Kamper:</strong> {report.reservation.vehicle.name}</p>
+                            <p><strong>Data Oddania:</strong> {report.reportDate}</p>
+                            <p><strong>Lokalizacja:</strong> {report.reservation.location}</p>
+                            <p><strong>Stan przy Oddaniu:</strong> {report.pickUpCamperCondition}</p>
+                            <Table hover>
+                                <tbody>
+                                    <tr>
+                                        <td>Stan techniczny</td>
+                                        <td>{report.technicalCondition}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Stan wnętrza</td>
+                                        <td>{report.interiorCondition}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Stan wizulany</td>
+                                        <td>{report.visualCondition}</td>
+                                    </tr>
+                                </tbody>
+                            </Table>
+                            <p><strong>Opis:</strong> {report.comment}</p>
+
                         </ListGroup.Item>
                     ))}
                 </ListGroup>

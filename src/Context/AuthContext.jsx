@@ -378,6 +378,66 @@ export const AuthProvider = ({ children }) => {
         console.log("set insurances")
     }
 
+    const createPickupReport = async(report)=>{
+        console.log("create pickup report")
+        return axios.post("http://localhost:8080/reports/pickup",report,config)
+        .then((res)=>{
+            console.log(res)
+            return res.data
+        })
+        .catch((err)=>{
+            return err
+        })
+    }
+
+    
+    const createReturnReport = async(report)=>{
+        console.log("create pickup report")
+        return axios.post("http://localhost:8080/reports/return",report,config)
+        .then((res)=>{
+            console.log(res)
+            return res.data
+        })
+        .catch((err)=>{
+            return err
+        })
+    }
+
+    const getAllReports = async () => {
+        console.log("get all reports")
+        return axios.get("http://localhost:8080/reports",config)
+        .then((res)=>{
+            console.log(res)
+            return res.data
+        })
+        .catch((err)=>{
+            return err
+        })
+    }
+
+    const getAllRepairs = async () =>{
+        console.log("get all repairs")
+        return axios.get("http://localhost:8080/repairs",config)
+        .then((res)=>{
+            console.log(res)
+            return res.data
+        })
+        .catch((err)=>{
+            return err
+        })
+    }
+
+    const addRepair = async(newRepair) =>{
+        console.log("add Repair")
+        return axios.post("http://localhost:8080/repairs",newRepair,config)
+        .then((res)=>{
+            console.log(res)
+            return res.data
+        })
+        .catch((err)=>{
+            return err
+        })
+    }
 
 
 
@@ -411,6 +471,11 @@ export const AuthProvider = ({ children }) => {
             getReservations,
             getAllPrices,
             addPrice,
+            createPickupReport,
+            createReturnReport,
+            getAllReports,
+            getAllRepairs,
+            addRepair,
             login,
             logout,
             register

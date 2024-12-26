@@ -1,35 +1,68 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './Repairs.css';
+import { AuthContext } from '../../../Context/AuthContext';
 
 const Repairs = () => {
     const [repairs, setRepairs] = useState([]);
     const [newRepair, setNewRepair] = useState({ camper: '', date: '', description: '' });
+    const [campers, setCampers] = useState([]);
+    const {getAllCampers, getAllRepairs, addRepair} = useContext(AuthContext)
+    const [refresh, setRefresh] = useState(false);
+
+    useEffect(()=>{
+        async function getCampers() {
+            setCampers(await getAllCampers());
+        }
+        async function getRepairs() {
+            setRepairs(await getAllRepairs())
+        }
+        getRepairs()
+        getCampers()
+
+    },[refresh])
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setNewRepair({ ...newRepair, [name]: value });
     };
 
-    const addRepair = () => {
-        setRepairs([...repairs, { ...newRepair, id: repairs.length + 1 }]);
+    const handleAddRepair = () => {
+        console.log(newRepair)
+        addRepair(newRepair)
+
+        // setRepairs([...repairs, { ...newRepair, id: repairs.length + 1 }]);
+        setRefresh(!refresh)
         setNewRepair({ camper: '', date: '', description: '' });
     };
+    
 
     return (
         <div className="repairs-container">
             <h2 className="title">Zarządzanie Naprawami Kamperów</h2>
             <div className="repairs-form-container">
+                <select 
+                name='camperid'
+                value={newRepair.camperId}
+                onChange={handleInputChange}
+                placeholder="Kamper"
+                >
+                    {
+                        campers.map((camper)=>{
+                            return <option value={camper.id}>{camper.name}</option>
+                        })
+                    }
+                </select>
+                
                 <input
-                    type="text"
-                    name="camper"
-                    placeholder="Kamper"
-                    value={newRepair.camper}
+                    type="date"
+                    name="startDate"
+                    value={newRepair.startDate}
                     onChange={handleInputChange}
                 />
                 <input
                     type="date"
-                    name="date"
-                    value={newRepair.date}
+                    name="endDate"
+                    value={newRepair.endDate}
                     onChange={handleInputChange}
                 />
                 <input
@@ -39,22 +72,24 @@ const Repairs = () => {
                     value={newRepair.description}
                     onChange={handleInputChange}
                 />
-                <button onClick={addRepair}>Dodaj Naprawę</button>
+                <button onClick={handleAddRepair}>Dodaj Naprawę</button>
             </div>
             <table className="repair-table">
                 <thead>
                     <tr>
                         <th>Kamper</th>
-                        <th>Data</th>
+                        <th>Data początkowa</th>
+                        <th>Data końcowa</th>
                         <th>Opis</th>
                     </tr>
                 </thead>
                 <tbody>
                     {repairs.map(repair => (
                         <tr key={repair.id}>
-                            <td>{repair.camper}</td>
-                            <td>{repair.date}</td>
-                            <td>{repair.description}</td>
+                            <td>{repair.vehicle.name}</td>
+                            <td>{repair.startDate}</td>
+                            <td>{repair.endDate}</td>
+                            <td>{repair.name}</td>
                         </tr>
                     ))}
                 </tbody>
