@@ -231,6 +231,18 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
+    const getVehicleReservations = async (id) =>{
+        console.log("get reservations by vehicle id")
+        return axios.get("http://localhost:8080/reservation/vehicle/"+id,config)
+            .then((res)=>{
+                console.log(res.data)
+                return res.data
+            })
+            .catch((err)=>{
+                console.log(err)
+            })
+    }
+
     const acceptReservation = async (id) => {
         console.log("accept reservation"+id)
 
@@ -292,6 +304,18 @@ export const AuthProvider = ({ children }) => {
         })
     }
 
+    const resignReservation = async(id) =>{
+        console.log("resign reservation")
+
+        return axios.get(`http://localhost:8080/reservation/resign/${id}`,config)
+        .then((res)=>{
+            console.log(res)
+            return res.data
+        })
+        .catch((err)=>{
+            return err
+        })
+    }
     const getCamperById = () =>{
         console.log("get camper by id")
     }
@@ -458,6 +482,7 @@ export const AuthProvider = ({ children }) => {
             deleteUser,
             removeReservation,
             cancelReservation,
+            resignReservation,
             getAllInsurances,
             addInsurance,
             getCamperById,
@@ -469,6 +494,7 @@ export const AuthProvider = ({ children }) => {
             addReservation,
             removeReservation,
             getReservations,
+            getVehicleReservations,
             getAllPrices,
             addPrice,
             createPickupReport,

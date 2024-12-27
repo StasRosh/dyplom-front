@@ -145,9 +145,13 @@ const AdminReports = () => {
                         <ListGroup.Item className="text-center">Brak zaakceptowanych rezerwacji</ListGroup.Item>
                     ) : (
                         reservations.map(reservation => {
+                            if (reservation.order == null){
+                                return null;
+                            }
                             if (reservation.order.orderStatus === 'FINISHED') {
                                 return null;
                             }
+                            
 
                             return (
                                 <ListGroup.Item

@@ -61,7 +61,7 @@ const AdminPrices = () => {
             vehicleTypeId: Categories.indexOf(selectedCategory)
           }
 
-        addPrice(priceData);
+        addPrice(priceData);    
            
         alert('Ceny zapisane!');
         setRefresh(!refresh)

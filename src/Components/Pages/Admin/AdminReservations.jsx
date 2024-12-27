@@ -56,7 +56,7 @@ const AdminReservations = () => {
                     reservations.map(reservation => {
                         const user = users.find(user => user.id === reservation.userId);
                         const camper = getCamperById(reservation.camperId);
-
+                        if(reservation.order != null)
                         return (
                             <div key={reservation.id} className="admin-reservation-card">
                                 <div className="reservation-details">
@@ -72,6 +72,7 @@ const AdminReservations = () => {
                                             ? `${reservation.start} - ${reservation.end}`
                                             : 'Brak dat'}
                                     </p>
+                                    <p><strong>Koszt: </strong> {reservation.order.totalCost || 'Nieznany'}</p>
                                     <p><strong>Status:</strong> {reservation.order.orderStatus || 'Nieznany'}</p>
                                 </div>
                                 <div className="admin-reservation-actions">

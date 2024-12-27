@@ -9,10 +9,11 @@ import Cookies from 'js-cookie'
 
 
 const Reservations = () => {
-    const { reservations,addReservation, removeReservation, acceptReservation, getReservations } = useContext(AuthContext);
+    const { reservations,addReservation, resignReservation, acceptReservation, getReservations } = useContext(AuthContext);
     const [showModal, setShowModal] = useState(false);
     const [selectedReservation, setSelectedReservation] = useState(null);
     const [userReservations, setUserReservations] = useState([]);
+    const [refresh, setRefresh] = useState(false);
 
     // Wyświetlenie rezerwacji tylko dla zalogowanego użytkownika
     // const userReservations = reservations.filter(reservation => reservation.userId === currentUser?.id);
@@ -21,12 +22,15 @@ const Reservations = () => {
 
     useEffect(() => {
         getAllReservations()
-    },[]);
+    },[refresh]);
 
     // Funkcja do usuwania rezerwacji
-    const handleDelete = (id) => {
-        removeReservation(id);
-        getAllReservations();
+    const handleResign = async (id) => {
+        var res = await resignReservation(id)
+        if(res != 'Success'){
+            alert(res)
+        }
+        setRefresh(!refresh);
     };
     const getAllReservations = () => {
         const config = {
@@ -56,12 +60,6 @@ const Reservations = () => {
         setShowModal(false);
         setSelectedReservation(null);
     };
-
-    // Monitorowanie zmian w statusie rezerwacji
-    useEffect(() => {
-        // Za każdym razem, gdy rezerwacje się zmieniają, zapisujemy je w localStorage
-        localStorage.setItem('reservations', JSON.stringify(reservations));
-    }, [reservations]);
 
     // Jeśli użytkownik nie jest zalogowany, wyświetlamy komunikat
     if (!Cookies.get("user_id")) {
@@ -104,6 +102,7 @@ const Reservations = () => {
                             </p>
                             <p>Lokalizacja: {reservation.location}</p>
                             <p>Status: {reservation.order.orderStatus}</p>
+                            <p>Koszt: {reservation.order.totalCost}</p>
                             <Button
                                 onClick={() => handleOpenModal(reservation)}
                                 className="btn btn-secondary"
@@ -111,10 +110,10 @@ const Reservations = () => {
                                 Zobacz Szczegóły
                             </Button>
                             <Button
-                                onClick={() => handleDelete(reservation.id)}
+                                onClick={() => handleResign(reservation.id)}
                                 className="btn btn-danger"
                             >
-                                Usuń Rezerwację
+                                Zrezygnuj z rezerwacji
                             </Button>
                         </div>
                     </div>

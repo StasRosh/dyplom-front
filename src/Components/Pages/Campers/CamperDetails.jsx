@@ -10,6 +10,8 @@ import Calendar from 'react-calendar';  // Importujemy react-calendar
 import 'react-calendar/dist/Calendar.css';  // Importujemy stylowanie kalendarza
 import axios from 'axios';
 import Cookies from 'js-cookie'
+import { isWithinInterval, isSameDay, parse } from 'date-fns';
+
 
 import lozkoIcon from './Image/Dane techniczne/lozko2.svg';
 import ludzikIcon from './Image/Dane techniczne/ludzik2.svg';
@@ -20,7 +22,7 @@ import wysokoscIcon from './Image/Dane techniczne/wysokosc.svg';
 
 
 const CamperDetails = () => {
-    const { currentUser, addReservation, reservations, removeReservation } = useContext(AuthContext);
+    const { currentUser, addReservation, reservations, removeReservation, getVehicleReservations } = useContext(AuthContext);
     const navigate = useNavigate();
     const { camperId } = useParams();
     const [camperData, setCamperData] = useState({});
@@ -33,6 +35,12 @@ const CamperDetails = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [showLoginModal, setShowLoginModal] = useState(false); // Stan do pokazania modala logowania
     const [price, setPrice] = useState(null) ;
+    const [occupied,setOccupied] = useState([]);
+
+
+    async function getOccupied(id) {
+        setOccupied( await getVehicleReservations(id));
+    }
 
 
     useEffect(() => {
@@ -44,7 +52,10 @@ const CamperDetails = () => {
             }).catch((err) => {
                 console.log(err)
             })
+
+            getOccupied(camperId)
     }, [])
+
 
     useEffect(() => {
 
@@ -67,6 +78,16 @@ const CamperDetails = () => {
         if (!date) return '';
         return date.toLocaleDateString();  // Zwraca datę w formacie dd/mm/yyyy
     };
+
+    function tileDisable({date,view}){
+        if(view === 'month'){
+            return occupied.some( disabled => {
+                const start = parse(disabled.start, "yyyy-MM-dd", new Date());
+                const end = parse(disabled.end, "yyyy-MM-dd", new Date());
+                return isWithinInterval(date, { start, end });
+            } )
+        }
+    }
 
     // Funkcja rezerwacji
     const handleReserve = () => {
@@ -100,9 +121,10 @@ const CamperDetails = () => {
         };
         console.log(newReservation)
 
-        addReservation(newReservation);  // Dodaj rezerwację do kontekstu
+        addReservation(newReservation)
+        navigate('/reservations');  // Przekierowanie na stronę rezerwacji
         setTimeout(() => setReservationStatus(''), 3000);  // Status rezerwacji na 3 sekundy
-        // navigate('/reservations');  // Przekierowanie na stronę rezerwacji
+        
     };
 
     return (
@@ -231,6 +253,7 @@ const CamperDetails = () => {
                         }}
                         value={[startDate, endDate]}
                         selectRange={true}
+                        tileDisabled={tileDisable}
                         minDate={new Date()}
                     />
                 </div>
