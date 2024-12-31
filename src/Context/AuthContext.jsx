@@ -463,6 +463,30 @@ export const AuthProvider = ({ children }) => {
         })
     }
 
+    const deleteRepair = async(id) =>{
+        console.log("add Repair")
+        return axios.delete("http://localhost:8080/repairs/"+id,config)
+        .then((res)=>{
+            console.log(res)
+            return res.data
+        })
+        .catch((err)=>{
+            return err
+        })
+    }
+
+    const updateRepair = async(repairData) =>{
+        console.log("add Repair")
+        return axios.put("http://localhost:8080/repairs/"+repairData.id,repairData,config)
+        .then((res)=>{
+            console.log(res)
+            return res.data
+        })
+        .catch((err)=>{
+            return err
+        })
+    }
+
 
 
     return (
@@ -502,6 +526,8 @@ export const AuthProvider = ({ children }) => {
             getAllReports,
             getAllRepairs,
             addRepair,
+            deleteRepair,
+            updateRepair,
             login,
             logout,
             register
