@@ -183,6 +183,7 @@ export const AuthProvider = ({ children }) => {
         })
         .catch((err)=>{
             console.log(err)
+            alert(err)
         })
     };
 
@@ -198,6 +199,7 @@ export const AuthProvider = ({ children }) => {
         })
         .catch((err)=>{
             console.log(err)
+            alert(err)
         })
 
     }
@@ -214,6 +216,7 @@ export const AuthProvider = ({ children }) => {
         })
         .catch((err)=>{
             console.log(err)
+            alert(err)
         })
     }
 
@@ -227,6 +230,7 @@ export const AuthProvider = ({ children }) => {
             })
             .catch((err)=>{
                 console.log(err)
+                alert(err)
             })
         }
     }
@@ -240,6 +244,7 @@ export const AuthProvider = ({ children }) => {
             })
             .catch((err)=>{
                 console.log(err)
+                alert(err)
             })
     }
 
@@ -252,6 +257,7 @@ export const AuthProvider = ({ children }) => {
             return res.data
         })
         .catch((err)=>{
+            alert(err)
             return err
         })
     }
@@ -264,6 +270,7 @@ export const AuthProvider = ({ children }) => {
             return res.data
         })
         .catch((err)=>{
+            alert(err)
             return err
         })
     }
@@ -276,6 +283,20 @@ export const AuthProvider = ({ children }) => {
             return res.data
         })
         .catch((err)=>{
+            alert(err)
+            return err
+        })
+    }
+
+    const updateInsurance = async (data) => {
+        console.log("update insuracne")
+        axios.patch('http://localhost:8080/inspection/update/'+data.id,data,config)
+        .then((res)=>{
+            console.log(res)
+            return res.data
+        })
+        .catch((err)=>{
+            alert(err)
             return err
         })
     }
@@ -287,6 +308,7 @@ export const AuthProvider = ({ children }) => {
         .then((res)=>{
             console.log(res.data)
         }).catch((err)=>{
+            alert(err)
             console.log(err)
         })
     }
@@ -300,6 +322,7 @@ export const AuthProvider = ({ children }) => {
             return res.data
         })
         .catch((err)=>{
+            alert(err)
             return err
         })
     }
@@ -313,6 +336,7 @@ export const AuthProvider = ({ children }) => {
             return res.data
         })
         .catch((err)=>{
+            alert(err)
             return err
         })
     }
@@ -328,6 +352,7 @@ export const AuthProvider = ({ children }) => {
             return res.data
         })
         .catch((err)=>{
+            alert(err)
             return err
         })
     }
@@ -341,6 +366,7 @@ export const AuthProvider = ({ children }) => {
             return res.data
         })
         .catch((err)=>{
+            alert(err)
             return err
         })
     }
@@ -354,6 +380,7 @@ export const AuthProvider = ({ children }) => {
             return res.data
         })
         .catch((err)=>{
+            alert(err)
             return err
         })
         
@@ -370,6 +397,7 @@ export const AuthProvider = ({ children }) => {
             console.log(res)
         })
         .catch((err)=>{
+            alert(err)
             console.log(err)
         })
     }
@@ -381,6 +409,7 @@ export const AuthProvider = ({ children }) => {
             console.log(res)
         })
         .catch((err)=>{
+            alert(err)
             console.log(err)
         })
     }
@@ -394,6 +423,7 @@ export const AuthProvider = ({ children }) => {
             console.log(res)
         })
         .catch((err)=>{
+            alert(err)
             console.log(err)
         })
     }
@@ -410,6 +440,7 @@ export const AuthProvider = ({ children }) => {
             return res.data
         })
         .catch((err)=>{
+            alert(err)
             return err
         })
     }
@@ -423,6 +454,7 @@ export const AuthProvider = ({ children }) => {
             return res.data
         })
         .catch((err)=>{
+            alert(err)
             return err
         })
     }
@@ -435,6 +467,7 @@ export const AuthProvider = ({ children }) => {
             return res.data
         })
         .catch((err)=>{
+            alert(err)
             return err
         })
     }
@@ -447,6 +480,7 @@ export const AuthProvider = ({ children }) => {
             return res.data
         })
         .catch((err)=>{
+            alert(err)
             return err
         })
     }
@@ -459,6 +493,7 @@ export const AuthProvider = ({ children }) => {
             return res.data
         })
         .catch((err)=>{
+            alert(err)
             return err
         })
     }
@@ -471,6 +506,7 @@ export const AuthProvider = ({ children }) => {
             return res.data
         })
         .catch((err)=>{
+            alert(err)
             return err
         })
     }
@@ -483,9 +519,64 @@ export const AuthProvider = ({ children }) => {
             return res.data
         })
         .catch((err)=>{
+            alert(err)
             return err
         })
     }
+
+    const addLocation = async(locationData) =>{
+        console.log("add location")
+        return axios.post("http://localhost:8080/location",locationData,config)
+        .then((res)=>{
+            console.log(res)
+            return res.data
+        })
+        .catch((err)=>{
+            alert(err)
+            return err
+        })
+
+    }
+
+    const deleteLocation = async(id) =>{
+        return axios.delete("http://localhost:8080/location/"+id,config)
+        .then((res)=>{
+            console.log(res)
+            return res.data
+        })
+        .catch((err)=>{
+            alert(err)
+            return err
+        })
+        
+    }
+
+    const getAllLocations = async()=>{
+        return axios.get("http://localhost:8080/location/all",config)
+        .then((res)=>{
+            console.log(res)
+            return res.data
+        })
+        .catch((err)=>{
+            alert(err)
+            return err
+        })
+    }
+
+    const updateLocation = async(id,data)=>{
+        return axios.patch("http://localhost:8080/location/"+id,data,config)
+        .then((res)=>{
+            console.log(res)
+            return res.data
+        })
+        .catch((err)=>{
+            alert(err)
+            return err
+        })
+
+    }
+
+    
 
 
 
@@ -509,6 +600,7 @@ export const AuthProvider = ({ children }) => {
             resignReservation,
             getAllInsurances,
             addInsurance,
+            updateInsurance,
             getCamperById,
             getAllCampers,
             addCamper,
@@ -528,6 +620,10 @@ export const AuthProvider = ({ children }) => {
             addRepair,
             deleteRepair,
             updateRepair,
+            addLocation,
+            deleteLocation,
+            getAllLocations,
+            updateLocation,
             login,
             logout,
             register

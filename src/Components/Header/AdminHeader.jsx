@@ -23,6 +23,7 @@ const AdminHeader = () => {
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">
                     <Nav className="navbar-nav">
+                        <Nav.Link as={Link} to="/admin/locations">Lokalizacje</Nav.Link>
                         <Nav.Link as={Link} to="/admin/users">Użytkownicy</Nav.Link>
                         <Nav.Link as={Link} to="/admin/campers">Campery</Nav.Link>
                         <Nav.Link as={Link} to="/admin/reservations">Rezerwacje</Nav.Link>

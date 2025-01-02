@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import './AdminCampers.css';
 import { AuthContext } from '../../../Context/AuthContext';
+import { Modal } from 'react-bootstrap';
 
 const AdminCampers = () => {
     const [newCamper, setNewCamper] = useState({
@@ -13,8 +14,9 @@ const AdminCampers = () => {
     });
     const { getAllCampers,addCamper,deleteCamper,updateCamper } = useContext(AuthContext);
 
-    const [editingCamper, setEditingCamper] = useState(null);
+    const [editingCamper, setEditingCamper] = useState({ name: '', description: '', comment: '', vehicleTypeId: '', image: '' });
     const [campersData, setCampersData] = useState([]);
+    const [editModal, setEditModal] = useState(false);
 
     useEffect(() => {
         async function getCamperData() {
@@ -51,8 +53,8 @@ const AdminCampers = () => {
     
     };
 
-    const handleAddCamper = () => {
-        if (!newCamper.name || !newCamper.description || !newCamper.price || !newCamper.capacity || !newCamper.vehicleTypeId || !newCamper.image) {
+    const handleAddCamper = async() => {
+        if (!newCamper.name || !newCamper.description || !newCamper.comment || !newCamper.vehicleTypeId || !newCamper.image) {
             alert('Wszystkie pola muszą być wypełnione!');
             return;
         }
@@ -62,20 +64,23 @@ const AdminCampers = () => {
             imageLink: newCamper.image,
             vehicleTypeId: newCamper.vehicleTypeId,
             id: 0,
-            comment: "string",
+            comment: newCamper.comment,
             description: newCamper.description
           }
-        addCamper(newCamperData);
-        setNewCamper({ name: '', description: '', price: 0, capacity: 0, vehicleTypeId: '', image: '' }); // Resetujemy formularz
+        await addCamper(newCamperData);
+        setNewCamper({ name: '', description: '', comment: '', vehicleTypeId: '', image: '' }); // Resetujemy formularz
+        setCampersData([]);
     };
 
     const handleEditCamper = (camper) => {
+        camper.vehicleTypeId = camper.vehicleType.id
         setEditingCamper(camper);
+        setEditModal(true)
     };
 
-    const handleSaveEdit = () => {
+    const handleSaveEdit = async() => {
 
-        if (!editingCamper.name || !editingCamper.description || !editingCamper.price || !editingCamper.capacity || !editingCamper.vehicleTypeId || !editingCamper.imageLink) {
+        if (!editingCamper.name || !editingCamper.description ||!editingCamper.comment || !editingCamper.vehicleTypeId || !editingCamper.imageLink) {
             alert('Wszystkie pola muszą być wypełnione!');
             console.log(editingCamper)
             return;
@@ -83,9 +88,11 @@ const AdminCampers = () => {
 
         console.log(editingCamper)
         
-        updateCamper(editingCamper)
+        await updateCamper(editingCamper)
 
-        setEditingCamper(null);
+        // setEditingCamper(null);
+        setEditModal(false)
+        setCampersData([]);
     };
 
     const handleDeleteCamper = (camperId) => {
@@ -138,28 +145,11 @@ const AdminCampers = () => {
                     placeholder="Opis"
                 />
                 <input
-                    type="number"
-                    name="weekdayPrice"
-                    value={newCamper.weekdayPrice}
+                    type="text"
+                    name="comment"
+                    value={newCamper.comment}
                     onChange={handleInputChange}
-                    placeholder="Cena (dzień tygodnia)"
-                    min="1"
-                />
-                <input
-                    type="number"
-                    name="weekendPrice"
-                    value={newCamper.weekendPrice}
-                    onChange={handleInputChange}
-                    placeholder="Cena (weekend)"
-                    min="1"
-                />
-                <input
-                    type="number"
-                    name="capacity"
-                    value={newCamper.capacity}
-                    onChange={handleInputChange}
-                    placeholder="Ilość osób"
-                    min="1"
+                    placeholder="Komentarz"
                 />
                 <select
                     name="vehicleTypeId"
@@ -177,7 +167,7 @@ const AdminCampers = () => {
                     onChange={handleImageChange}
                     accept="image/*"
                 /> */}
-                <input type="text" onChange={handleImageChange} />
+                <input type="text" onChange={handleImageChange} placeholder='Link do zdjęcia' />
                 {newCamper.image && (
                     <img src={newCamper.image} alt="Podgląd zdjęcia" style={{ maxWidth: '200px', marginTop: '10px' }} />
                 )}
@@ -186,7 +176,8 @@ const AdminCampers = () => {
 
             <hr />
 
-            {editingCamper && (
+            <Modal show={editModal}>
+                <Modal.Body>
                 <div className="admin-form">
                     <h3>Edytuj kampera</h3>
                     <input
@@ -203,29 +194,12 @@ const AdminCampers = () => {
                         onChange={handleEditChange}
                         placeholder="Opis"
                     />
-                    <input
-                        type="number"
-                        name="weekdayPrice"
-                        value={editingCamper.weekdayPrice}
+                     <input
+                        type="text"
+                        name="comment"
+                        value={editingCamper.comment}
                         onChange={handleEditChange}
-                        placeholder="Cena (dzień tygodnia)"
-                        min="1"
-                    />
-                    <input
-                        type="number"
-                        name="weekendPrice"
-                        value={editingCamper.weekendPrice}
-                        onChange={handleEditChange}
-                        placeholder="Cena (weekend)"
-                        min="1"
-                    />
-                    <input
-                        type="number"
-                        name="capacity"
-                        value={editingCamper.capacity}
-                        onChange={handleEditChange}
-                        placeholder="Ilość osób"
-                        min="1"
+                        placeholder="Komentarz"
                     />
                     <select
                         name="vehicleTypeId"
@@ -242,14 +216,16 @@ const AdminCampers = () => {
                         onChange={handleEditImageChange}
                         accept="image/*"
                     /> */}
-                    <input type="text" onChange={handleEditImageChange} />
-                    {editingCamper.image && (
-                        <img src={editingCamper.image} alt="Podgląd zdjęcia" style={{ maxWidth: '200px', marginTop: '10px' }} />
+                    <input type="text" placeholder='Link do zdjęcia' onChange={handleEditImageChange} />
+                    {editingCamper.imageLink && (
+                        <img src={editingCamper.imageLink} alt="Podgląd zdjęcia" style={{ maxWidth: '200px', marginTop: '10px' }} />
                     )}
                     <button onClick={handleSaveEdit}>Zapisz zmiany</button>
-                    <button onClick={() => setEditingCamper(null)}>Anuluj</button>
+                    <button onClick={() => setEditModal(false)}>Anuluj</button>
                 </div>
-            )}
+            
+            </Modal.Body>
+            </Modal>
 
             <div className="camper-list">
                 <h3>Lista kamperów</h3>
@@ -259,7 +235,7 @@ const AdminCampers = () => {
                             <h3>{camper.name}  [{camper.id}]</h3>
                             <p>{camper.description}</p>
                             {/* <p>Cena: {camper.price} zł/dzień</p> */}
-                            <p>Ilość osób: {camper.capacity}</p>
+                            <p>Komentarz: {camper.comment}</p>
                             <p>Kategoria: {camper.vehicleType.name}</p>
                             {camper.imageLink && (
                                 <img src={camper.imageLink} alt="Zdjęcie kampera" style={{ maxWidth: '200px', marginTop: '10px' }} />

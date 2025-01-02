@@ -22,7 +22,7 @@ import wysokoscIcon from './Image/Dane techniczne/wysokosc.svg';
 
 
 const CamperDetails = () => {
-    const { currentUser, addReservation, reservations, removeReservation, getVehicleReservations } = useContext(AuthContext);
+    const { currentUser, addReservation, reservations, removeReservation, getVehicleReservations,getAllLocations } = useContext(AuthContext);
     const navigate = useNavigate();
     const { camperId } = useParams();
     const [camperData, setCamperData] = useState({});
@@ -36,10 +36,14 @@ const CamperDetails = () => {
     const [showLoginModal, setShowLoginModal] = useState(false); // Stan do pokazania modala logowania
     const [price, setPrice] = useState(null) ;
     const [occupied,setOccupied] = useState([]);
+    const [locations, setLocations] = useState([]);
 
 
     async function getOccupied(id) {
         setOccupied( await getVehicleReservations(id));
+    }
+    async function getLocations() {
+        setLocations(await getAllLocations());
     }
 
 
@@ -52,7 +56,7 @@ const CamperDetails = () => {
             }).catch((err) => {
                 console.log(err)
             })
-
+            getLocations();
             getOccupied(camperId)
     }, [])
 
@@ -223,13 +227,23 @@ const CamperDetails = () => {
                 <div className="camper1-reservation-form-container">
                     <h3>Rezerwacja Kampera</h3>
                     <div className="form-control">
+
+                        {/* Zmienić na selecta z api !!!!!
+                         */}
                         <label htmlFor="location">Lokalizacja:</label>
-                        <input
+                        <select
                             id="location"
                             value={location}
                             onChange={(e) => setLocation(e.target.value)}
                             placeholder="Wpisz lokalizację"
-                        />
+                        >
+                            <option></option>
+                            {locations.map((location)=>{
+                                return <option value={location.city}>{location.city}</option>
+                            })}
+                        </select>
+
+                        
                     </div>
                     {/* <div className="form-control">
                         <label htmlFor="guests">Liczba gości:</label>

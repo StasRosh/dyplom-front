@@ -6,6 +6,7 @@ import './AdminUsers.css';
 const AdminUsers = () => {
     const { getAllUsers, deleteUser, toggleBlockUser } = useContext(AuthContext);
     const [users, setUsers] = useState([]);
+    const [refresh, setRefresh] = useState(true);
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -16,16 +17,16 @@ const AdminUsers = () => {
         };
 
         fetchUsers();
-    }, [getAllUsers]);
+    }, [getAllUsers,refresh]);
 
     const handleDelete = (userId) => {
         deleteUser(userId);
-        window.location.reload()
+        setRefresh(!refresh)
     };
 
     const handleBlockToggle = (userId, isBlocked) => {
         toggleBlockUser(userId);
-        window.location.reload()
+        setRefresh(!refresh)
     };
 
     return (
@@ -47,7 +48,7 @@ const AdminUsers = () => {
                             <td>{user.id}</td>
                             <td>{user.name}</td>
                             <td>{user.email}</td>
-                            <td>{user.acive ? 'Zablokowany' : 'Aktywny'}</td>
+                            <td>{user.acive ? 'Aktywny' : 'Zablokowany'}</td>
                             <td>
                                 <Button 
                                     variant="danger" 

@@ -3,15 +3,21 @@ import { AuthContext } from '../../../Context/AuthContext';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './AdminInsurances.css';
+import { redirect } from 'react-router';
+import { Button, Modal } from 'react-bootstrap';
 
 const AdminInsurances = () => {
-    const { addInsurance, getAllInsurances, getAllCampers } = useContext(AuthContext);
+    const { addInsurance, getAllInsurances, getAllCampers, updateInsurance } = useContext(AuthContext);
     const [selectedCamper, setSelectedCamper] = useState('');
     const [dateRange, setDateRange] = useState([null, null]);
+    const [editDateRange, setEditDateRange] = useState([null, null]);
     const [insuranceType, setInsuranceType] = useState('');
     const [insuranceName, setInsuranceName] = useState('');
     const [campersData, setCampersData] = useState([]);
     const [insurancesData, setInsurancesData] = useState([]);
+    const [refresh, setRefresh] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedInsurance, setSelectedInsurance] = useState(null);
 
     async function getInsurancesData() {
         setInsurancesData(await getAllInsurances())
@@ -21,17 +27,43 @@ const AdminInsurances = () => {
     }
 
     useEffect(() => {
-        if (campersData.length === 0) {
             getCamperData();
-
-        }
-        if (insurancesData.length === 0) {
             getInsurancesData()
-        }
-    }, []
+        
+    }, [refresh]
     );
 
-    const handleAddInsurance = () => {
+    const openModal = (insurance) => {
+        setSelectedInsurance(insurance);
+        setEditDateRange([insurance.startDate,insurance.validUntil])
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedInsurance(null);
+    };
+
+    const handleSaveChanges = async () => {
+        if (!selectedInsurance || !editDateRange[0] || !editDateRange[1]) {
+            alert('Wszystkie pola muszą być wypełnione!');
+            return;
+        }
+
+        const updatedInsurance = {
+            ...selectedInsurance,
+            startDate: editDateRange[0].toISOString().split('T')[0],
+            validUntil: editDateRange[1].toISOString().split('T')[0],
+        };
+
+        console.log(updatedInsurance);
+
+        await updateInsurance(updatedInsurance);
+        setRefresh(!refresh);
+        closeModal();
+    };
+
+    const handleAddInsurance = async() => {
         if (!selectedCamper || !dateRange[0] || !dateRange[1] || !insuranceType || !insuranceName) {
             alert('Wszystkie pola muszą być wypełnione!');
             return;
@@ -46,20 +78,42 @@ const AdminInsurances = () => {
             name: insuranceName,
         };
 
-        addInsurance(newInsurance);
+        await addInsurance(newInsurance);
+        setRefresh(!refresh)
+
         setSelectedCamper('');
         setDateRange([null, null]);
         setInsuranceType('');
         setInsuranceName('');
-        window.location.reload();
     };
-
-    console.log("here")
-    console.log(insurancesData)
-    console.log(campersData)
 
     return (
         <div className="admin-insurances-container">
+            <Modal
+            show={isModalOpen}
+            >
+                <Modal.Header>Przedłuż Ubezpieczenie/Przegląd</Modal.Header>
+                <Modal.Body>
+                <p>
+                            <strong>Nazwa:</strong> {selectedInsurance ? selectedInsurance.name : ""}
+                        </p>
+                        <p>
+                            <strong>Typ:</strong> {selectedInsurance ? selectedInsurance.inspectionType : ""}
+                        </p>
+                        <div className="calendar-container">
+                            <h4>Wybierz Nowy Zakres Dat:</h4>
+                            <Calendar
+                                onChange={(range) => setEditDateRange(range)}
+                                selectRange={true}
+                                defaultValue={editDateRange}
+                                value={editDateRange}
+                            />
+                            
+                        </div>
+                        <button className="save-button" onClick={handleSaveChanges}>Zapisz Zmiany</button>
+                        <button className="close-button" onClick={closeModal}>Anuluj</button>
+                </Modal.Body>
+            </Modal>
             <h2 className="title">Zarządzanie Ubezpieczeniami/Przeglądami Kamperów</h2>
             <div className="form-container">
                 <h3>Dodaj Ubezpieczenie/Przegląd</h3>
@@ -147,6 +201,7 @@ const AdminInsurances = () => {
                                         <p>
                                             <strong>Do:</strong> {insurance.validUntil}
                                         </p>
+                                        <Button onClick={() => openModal(insurance)}>Przedłuż</Button>
                                     </div>
                                 ) : (
                                     ""

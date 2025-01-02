@@ -36,9 +36,9 @@ const AdminReservations = () => {
         
     };
 
-    const handleRemove = (reservationId) => {
-        removeReservation(reservationId);
-        window.location.reload()
+    const handleRemove = async(reservationId) => {
+        await removeReservation(reservationId);
+        setReload(!reload);
     };
 
     const getCamperById = (camperId) => {
@@ -61,17 +61,19 @@ const AdminReservations = () => {
                             <div key={reservation.id} className="admin-reservation-card">
                                 <div className="reservation-details">
                                     <h3>ID: {reservation.id}</h3>
-                                    <p><strong>Użytkownik:</strong> {user ? user.email : 'Nieznany'}</p>
+                                    <p><strong>Użytkownik:</strong> {reservation.order.user ? reservation.order.user.email : 'Nieznany'}</p>
                                     <p>
                                         <strong>Kamper:</strong>{' '}
-                                        {reservation.vehicle ? `${reservation.vehicle.name} (${reservation.vehicle.vehicleType.name})` : 'Nieznany'}
+                                        {reservation.vehicle ? `${reservation.vehicle.name} (${reservation.vehicle.vehicleType.name}) #${reservation.vehicle.id}`  : 'Nieznany'}
                                     </p>
                                     <p>
                                         <strong>Okres:</strong>{' '}
                                         {reservation.start && reservation.end
                                             ? `${reservation.start} - ${reservation.end}`
                                             : 'Brak dat'}
+                                    
                                     </p>
+                                    <p><strong>Lokalizacja: </strong> {reservation.location.city + " " + reservation.location.address || 'Nieznany'}</p>
                                     <p><strong>Koszt: </strong> {reservation.order.totalCost || 'Nieznany'}</p>
                                     <p><strong>Status:</strong> {reservation.order.orderStatus || 'Nieznany'}</p>
                                 </div>

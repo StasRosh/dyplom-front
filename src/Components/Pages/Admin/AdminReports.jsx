@@ -11,6 +11,7 @@ const AdminReports = () => {
     const [returnReports, setReturnReports] = useState([]);
     const [fetchedReservations, setFetchedReservations] = useState([]);
     const [reports,setReports] = useState([]);
+    const [refresh, setRefresh] = useState(false)
     const navigate = useNavigate();
 
     async function getReservations(userid) {
@@ -52,7 +53,7 @@ const AdminReports = () => {
         const storedReturnReports = JSON.parse(localStorage.getItem('returnReports')) || [];
         setPickUpReports(storedPickUpReports);
         setReturnReports(storedReturnReports);
-    }, []);
+    }, [refresh]);
 
     const updateReservationState = (reservationId, updates) => {
         // Aktualizujemy lokalny stan komponentu
@@ -108,6 +109,7 @@ const AdminReports = () => {
         createPickupReport(newReport)
 
         alert('Raport odbioru zapisany!');
+        setRefresh(!refresh)
     };
 
     const handleSaveReturnReport = (reservation) => {
@@ -130,6 +132,7 @@ const AdminReports = () => {
         createReturnReport(newReport)
 
         alert('Raport zwrotu zapisany!');
+        setRefresh(!refresh)
     };
 
     const handleAdminRepairs = () => {
@@ -165,6 +168,8 @@ const AdminReports = () => {
                                             <p><strong>Status: </strong>{reservation.order.orderStatus}</p>
                                             <p><strong>Data Odbioru:</strong> {reservation.start || 'Brak daty'}</p>
                                             <p><strong>Data Zwrotu:</strong> {reservation.end || 'Brak daty'}</p>
+                                            <p><strong>Klient: </strong>{reservation.order.user.name} </p>
+                                            <p><strong>Koszt: </strong> {reservation.order.totalCost}</p>
 
                                             <Accordion>
 {reservation.order.orderStatus !== 'IN_USE' ? (

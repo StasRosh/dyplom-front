@@ -100,7 +100,7 @@ const Reservations = () => {
                             <p>
                                 Termin: <strong>{reservation.start} - {reservation.end}</strong>
                             </p>
-                            <p>Lokalizacja: {reservation.location}</p>
+                            <p>Lokalizacja: {reservation.location.city? reservation.location.address+" "+reservation.location.city : reservation.location}</p>
                             <p>Status: {reservation.order.orderStatus}</p>
                             <p>Koszt: {reservation.order.totalCost}</p>
                             <Button
@@ -109,12 +109,15 @@ const Reservations = () => {
                             >
                                 Zobacz Szczegóły
                             </Button>
+                            {reservation.order.orderStatus == "PENDING" ? 
                             <Button
-                                onClick={() => handleResign(reservation.id)}
-                                className="btn btn-danger"
-                            >
-                                Zrezygnuj z rezerwacji
-                            </Button>
+                            onClick={() => handleResign(reservation.id)}
+                            className="btn btn-danger"
+                        >
+                            Zrezygnuj z rezerwacji
+                        </Button> :
+                        ""}
+                            
                         </div>
                     </div>
                 ))
@@ -128,11 +131,12 @@ const Reservations = () => {
                     </Modal.Header>
                     <Modal.Body>
                         <h5>{selectedReservation.camper}</h5>
-                        <p><strong>Data rozpoczęcia:</strong> {selectedReservation.startDate}</p>
-                        <p><strong>Data zakończenia:</strong> {selectedReservation.endDate}</p>
-                        <p><strong>Lokalizacja:</strong> {selectedReservation.location}</p>
-                        <p><strong>Ilość osób:</strong> {selectedReservation.guests}</p>
-                        <p><strong>Status:</strong> {selectedReservation.status}</p>
+                        <p><strong>Data rozpoczęcia:</strong> {selectedReservation.start}</p>
+                        <p><strong>Data zakończenia:</strong> {selectedReservation.end}</p>
+                        <p><strong>Lokalizacja:</strong> {selectedReservation.location.address+" "+selectedReservation.location.city}</p>
+                        <p><strong>Status:</strong> {selectedReservation.order.orderStatus}</p>
+                        <p><strong>Koszt:</strong> {selectedReservation.order.totalCost}</p>
+
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={handleCloseModal}>

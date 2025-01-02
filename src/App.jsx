@@ -27,6 +27,8 @@ import AdminPrices from './Components/Pages/Admin/AdminPrices';
 import AdminInsurances from './Components/Pages/Admin/AdminInsurances';
 import { AuthContext } from './Context/AuthContext';
 import Cookies from 'js-cookie'
+import AdminLocationsLocations from './Components/Pages/Admin/AdminLocations';
+import AdminLocations from './Components/Pages/Admin/AdminLocations';
 const App = () => {
     const {  addReservation, removeReservation, logout } = useContext(AuthContext);
 
@@ -99,6 +101,10 @@ const App = () => {
                             path="/admin/prices"
                             element={currentUser?.role === 'admin' ? <AdminPrices /> : <Navigate to="/" />}
                         />
+                        <Route
+                            path='/admin/locations'
+                            element={currentUser?.role === 'admin' ? <AdminLocations /> : <Navigate to="/" />}
+                            />
                         <Route
                            path="/admin/insurances"
                            element={currentUser?.role === 'admin' ? (<AdminInsurances campersData={campersData} />

@@ -54,6 +54,11 @@ const AdminPrices = () => {
 
     // Zapisanie nowych cen
     const handleSavePrices = () => {
+        if(!newPrice.weekendPrice){
+            alert('podaj cene')
+            return
+        }
+
         const priceData = {
             price: newPrice.weekendPrice,
             start: newPrice.startDate,
